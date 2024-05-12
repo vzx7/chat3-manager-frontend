@@ -4,6 +4,7 @@ const Calendar = lazy(() => import('../pages/Calendar'));
 const Chart = lazy(() => import('../pages/Chart'));
 const FormElements = lazy(() => import('../pages/Form/FormElements'));
 const FormLayout = lazy(() => import('../pages/Form/FormLayout'));
+const FormServiceInit = lazy(() => import('../pages/Form/FormServiceInit'));
 const Profile = lazy(() => import('../pages/Profile'));
 const Settings = lazy(() => import('../pages/Settings'));
 const Tables = lazy(() => import('../pages/Tables'));
@@ -11,6 +12,16 @@ const Alerts = lazy(() => import('../pages/UiElements/Alerts'));
 const Buttons = lazy(() => import('../pages/UiElements/Buttons'));
 
 const coreRoutes = [
+  {
+    path: '/service-init',
+    title: 'Инициализация сервиса',
+    component: FormServiceInit,
+  },
+  {
+    path: '/service-config',
+    title: 'Настройка сервиса',
+    component: FormLayout,
+  },
   {
     path: '/calendar',
     title: 'Calender',
