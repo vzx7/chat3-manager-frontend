@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import './satoshi.css';
+import '../src/fonts/TildaSans-Regular/TildaSans-Regular.css';
+import '../src/fonts/TildaSans-Bold/TildaSans-Bold.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

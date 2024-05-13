@@ -7,6 +7,8 @@ module.exports = {
   theme: {
     fontFamily: {
       satoshi: ['Satoshi', 'sans-serif'],
+      cyrilic: ['TildaSansRegular', 'sans-serif'],
+      cyrilicBold: ['TildaSansBold', 'sans-serif']
     },
     colors: {
       current: 'currentColor',
