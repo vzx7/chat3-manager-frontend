@@ -11,6 +11,8 @@ const Settings = lazy(() => import('../pages/Settings'));
 const Tables = lazy(() => import('../pages/Tables'));
 const Alerts = lazy(() => import('../pages/UiElements/Alerts'));
 const Buttons = lazy(() => import('../pages/UiElements/Buttons'));
+const Managers = lazy(() => import('../pages/Managers'));
+const AddManager = lazy(() => import('../pages/AddManager'));
 
 const coreRoutes = [
   {
@@ -22,6 +24,16 @@ const coreRoutes = [
     path: '/service-config',
     title: 'Настройка сервиса',
     component: FormServiceConfig,
+  },
+  {
+    path: '/managers',
+    title: 'Список менеджеров',
+    component: Managers,
+  },
+  {
+    path: '/add-manager',
+    title: 'Добавить менеджера',
+    component: AddManager,
   },
   {
     path: '/calendar',
