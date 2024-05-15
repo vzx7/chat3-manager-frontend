@@ -1,6 +1,8 @@
 import { useState } from 'react';
-
-const SwitcherTwo = () => {
+type Props = {
+  name?: string
+}
+const SwitcherTwo = ({ name }: Props) => {
   const [enabled, setEnabled] = useState(false);
 
   return (
@@ -11,6 +13,7 @@ const SwitcherTwo = () => {
       >
         <div className="relative">
           <input
+            name={name}
             id="toggle2"
             type="checkbox"
             className="sr-only"
