@@ -23,7 +23,7 @@ const TableService = () => {
             <tr>
               <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                 <h5 className="font-medium text-black dark:text-white">
-                  Free Package
+                  Лада ремонт
                 </h5>
                 <p className="text-sm">АЦ...</p>
               </td>
@@ -32,7 +32,7 @@ const TableService = () => {
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-                  Paid
+                  Активен
                 </p>
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -108,7 +108,7 @@ const TableService = () => {
             <tr>
               <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                 <h5 className="font-medium text-black dark:text-white">
-                  Standard Package
+                  BMW автомобили
                 </h5>
                 <p className="text-sm">АЦ...</p>
               </td>
@@ -117,7 +117,7 @@ const TableService = () => {
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-                  Paid
+                  Активен
                 </p>
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -193,7 +193,7 @@ const TableService = () => {
             <tr>
               <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                 <h5 className="font-medium text-black dark:text-white">
-                  Business Package
+                  BMW кузовной
                 </h5>
                 <p className="text-sm">АЦ...</p>
               </td>
@@ -202,7 +202,7 @@ const TableService = () => {
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <p className="inline-flex rounded-full bg-danger bg-opacity-10 py-1 px-3 text-sm font-medium text-danger">
-                  Unpaid
+                  Деактивирован
                 </p>
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -278,7 +278,7 @@ const TableService = () => {
             <tr>
               <td className="py-5 px-4 pl-9 xl:pl-11">
                 <h5 className="font-medium text-black dark:text-white">
-                  Standard Package
+                  KIA автомобили
                 </h5>
                 <p className="text-sm">АЦ...</p>
               </td>
@@ -287,7 +287,7 @@ const TableService = () => {
               </td>
               <td className="py-5 px-4">
                 <p className="inline-flex rounded-full bg-warning bg-opacity-10 py-1 px-3 text-sm font-medium text-warning">
-                  Pending
+                  Ожидает настройки
                 </p>
               </td>
               <td className="py-5 px-4">
