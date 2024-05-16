@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import ServiceList from '../pages/ServiceList';
 
 const Calendar = lazy(() => import('../pages/Calendar'));
 const Chart = lazy(() => import('../pages/Chart'));
@@ -24,6 +25,11 @@ const coreRoutes = [
     path: '/service-config',
     title: 'Настройка сервиса',
     component: FormServiceConfig,
+  },
+  {
+    path: '/service-list',
+    title: 'Список сервисов',
+    component: ServiceList,
   },
   {
     path: '/managers',
