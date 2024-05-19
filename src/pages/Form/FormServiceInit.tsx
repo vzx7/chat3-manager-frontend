@@ -23,6 +23,7 @@ const FormServiceInit = () => {
                       Domain <span className="text-meta-1">*</span>
                     </label>
                     <input
+                      required
                       type="text"
                       placeholder="Enter service domain"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -36,7 +37,7 @@ const FormServiceInit = () => {
                   <label className="mb-2.5 block text-black dark:text-white">
                     Enable SSL <span className="text-meta-1">*</span>
                   </label>
-                  <CheckboxTwo text="Использовать SSL для этого домена" />
+                  <CheckboxTwo text="Использовать SSL для этого домена" idRequired={true} />
                 </div>
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">

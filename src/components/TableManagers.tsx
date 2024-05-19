@@ -139,7 +139,7 @@ const TableManagers = () => {
                       <img src={ManagerTwo} alt="Product" />
                     </div>
                     <p className="text-sm text-black dark:text-white">
-                      Анастасия Федоровна Нестрашная
+                      Анастасия Федоровна Трезвая ;)
                     </p>
                   </div>
                 </div>

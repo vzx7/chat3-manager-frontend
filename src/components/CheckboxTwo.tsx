@@ -1,8 +1,9 @@
 import { useState } from 'react';
 type Props = {
-  text?: string
+  text?: string,
+  idRequired: boolean
 }
-const CheckboxTwo = ({ text }: Props) => {
+const CheckboxTwo = ({ text, idRequired }: Props) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   return (
@@ -13,6 +14,7 @@ const CheckboxTwo = ({ text }: Props) => {
       >
         <div className="relative">
           <input
+            required={idRequired}
             type="checkbox"
             id="checkboxLabelTwo"
             className="sr-only"
