@@ -1,10 +1,29 @@
 import Breadcrumb from '../components/Breadcrumb';
 import noname from '../images/avatars/noname.png';
 import fireToast from '../hooks/fireToast';
-import { Table } from "../components/TableSettings";
-import { Modal } from "../components/ModalSettings";
-import { useState,useEffect } from "react";
-const Settings = () => {
+import { useForm } from "react-hook-form";
+
+const AddManager = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit
+  } = useForm({
+    mode: 'onBlur'
+  });
+
+  const onSubmit = (data: any) => {
+    alert(JSON.stringify(data));
+  }
+
+  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
+    console.log(errors)
+    return error ? (
+      <p className="text-danger mt-2 text-sm" >
+        {error}
+      </p>
+    ) : null;
+  }
 /*   const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState(localStorage.getItem("alertSettings")?JSON.parse(localStorage.getItem("alertSettings")):[]);
   useEffect(() => {
@@ -50,7 +69,7 @@ const Settings = () => {
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
+                <form  onSubmit={handleSubmit(onSubmit)} action="#">
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                     <div className="w-full sm:w-1/2">
                       <label
@@ -87,12 +106,19 @@ const Settings = () => {
                         </span>
                         <input
                           className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="text"
-                          name="fullName"
                           id="fullName"
-                          placeholder="Devid Jhon"
-                          defaultValue="Devid Jhon"
+                          placeholder="ФИО"
+                          {
+                            ...register('fullName', {
+                              required: 'Поле обязательно к заполнению!',
+                              pattern: {
+                                value: /^asdf/,
+                                message: 'Поле должно содержать ФИО - Иван Иванович Иванов'
+                              }
+                            })
+                          }
                         />
+                        <TextFieldError errors={errors} error={errors['fullName']?.message} />
                       </div>
                     </div>
 
@@ -106,10 +132,18 @@ const Settings = () => {
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="text"
-                        name="phoneNumber"
                         id="phoneNumber"
-                        placeholder="+990 3343 7865"
-                        defaultValue="+990 3343 7865"
+                        placeholder="9032433456"
+                        {
+                          ...register('phoneNumber', {
+                            required: 'Поле обязательно к заполнению!',
+                            pattern: {
+                              value: /d/,
+                              message: 'Поле должно содержать ФИО - Иван Иванович Иванов'
+                            }
+                            
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -295,4 +329,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default AddManager;
