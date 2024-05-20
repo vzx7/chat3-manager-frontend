@@ -58,7 +58,7 @@ const AddManager = () => {
     <>
       <div className="mx-auto max-w-270">
         
-        <Breadcrumb pageName="Добавление менеджера" />
+        <Breadcrumb pageName="Добавить менеджера" />
 
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
@@ -76,7 +76,7 @@ const AddManager = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="fullName"
                       >
-                        Полное имя
+                        Полное имя <span className="text-meta-1">*</span>
                       </label>
                       <div className="relative">
                         <span className="absolute left-4.5 top-4">
@@ -112,8 +112,8 @@ const AddManager = () => {
                             ...register('fullName', {
                               required: 'Поле обязательно к заполнению!',
                               pattern: {
-                                value: /^asdf/,
-                                message: 'Поле должно содержать ФИО - Иван Иванович Иванов'
+                                value: /^(?=.{1,40}$)[а-яёА-ЯЁ]+(?:[-' ][а-яёА-ЯЁ]+)*$/,
+                                message: 'Поле должно содержать ФИО - Иван Иванович Иванов (на кириллице)'
                               }
                             })
                           }
@@ -127,24 +127,24 @@ const AddManager = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="phoneNumber"
                       >
-                        Телефон
+                        Телефон <span className="text-meta-1">*</span>
                       </label>
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="text"
                         id="phoneNumber"
-                        placeholder="9032433456"
+                        placeholder="9000000000"
                         {
                           ...register('phoneNumber', {
                             required: 'Поле обязательно к заполнению!',
                             pattern: {
-                              value: /d/,
-                              message: 'Поле должно содержать ФИО - Иван Иванович Иванов'
+                              value: /[0-9]{10}/,
+                              message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
                             }
-                            
                           })
                         }
                       />
+                      <TextFieldError errors={errors} error={errors['phoneNumber']?.message} />
                     </div>
                   </div>
 
@@ -153,7 +153,7 @@ const AddManager = () => {
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="emailAddress"
                     >
-                      Email Address
+                      Email <span className="text-meta-1">*</span>
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
@@ -184,10 +184,19 @@ const AddManager = () => {
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="email"
-                        name="emailAddress"
                         id="emailAddress"
                         placeholder="devidjond45@gmail.com"
-                        defaultValue="devidjond45@gmail.com"
+                        {
+                          ...register('emailAddress', {
+                            required: 'Поле обязательно к заполнению!',
+                            pattern: {
+                              value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              message: 'Введите корректный email'
+                            }
+                          })
+                        }
+                      />
+                      <TextFieldError errors={errors} error={errors['emailAddress']?.message} 
                       />
                     </div>
                   </div>
@@ -198,7 +207,7 @@ const AddManager = () => {
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="Username"
                     >
-                      BIO
+                      Комментарий
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
@@ -237,9 +246,8 @@ const AddManager = () => {
                         name="bio"
                         id="bio"
                         rows={6}
-                        placeholder="Write your bio here"
-                        defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut. Donec fermentum blandit aliquet."
-                      ></textarea>
+                        placeholder="Добавить комментарий о менеджере"
+                        ></textarea>
                     </div>
                   </div>
                   
