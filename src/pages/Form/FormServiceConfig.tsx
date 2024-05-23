@@ -1,6 +1,7 @@
 import Breadcrumb from '../../components/Breadcrumb';
 import SwitcherTwo from '../../components/SwitcherTwo';
 import { useState } from 'react';
+import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -16,6 +17,68 @@ import 'react-quill/dist/quill.snow.css';
  */
 const FormServiceConfig = () => {
   const [value, setValue] = useState('');
+  const [isRedirect, setRedirect] = useState(true);
+  const {
+    register,
+    setError,
+    formState: { errors },
+    reset,
+    handleSubmit
+  } = useForm({
+    mode: 'onBlur'
+  });
+
+  const setURL = (is: boolean) => setRedirect(is);
+
+  const onSubmit = async (data: any) => {
+    console.log(data);
+
+    const file = data.c_photo[0];
+    const accessImgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+    let isFileError = false;
+    let fileErrorMsg = '';
+    if (!accessImgTypes.includes(file.type)) {
+      isFileError = true;
+      fileErrorMsg = "Допустима загрузка только изображений в формате (png, svg, jpeg, gif)";
+    } else if (file.size > 500000) {
+      isFileError = true;
+      fileErrorMsg = "Изображение слишком тяжелое. Допустимо изображение весом не более 500кб.";
+    }
+
+    if (isFileError) {
+      setError("c_photo", {
+        type: "filetype",
+        message: fileErrorMsg
+      });
+
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("selectedfile", data.selectedfile[0]);
+    formData.append("fullName", data.fullName);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("emailAddress", data.emailAddress);
+    formData.append("bio", data.fullName);
+    
+    reset();
+
+    const requestOptions = {
+      method: "POST",
+      // headers: { 'Content-Type': 'application/json' },
+      body: formData
+    };
+    return;
+
+  }
+  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
+    console.log(errors)
+    return error ? (
+      <p className="text-danger mt-2 text-sm" >
+        {error}
+      </p>
+    ) : null;
+  }
   return (
     <>
       <Breadcrumb pageName="Конфигурация сервиса" />
@@ -25,7 +88,7 @@ const FormServiceConfig = () => {
           {/* <!-- Contact Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
 
-            <form action="#">
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="p-6.5">
                 <div className="border-b border-stroke py-4 dark:border-strokedark">
                   <h3 className="text-black dark:text-white font-bold text-lg">
@@ -37,9 +100,17 @@ const FormServiceConfig = () => {
                     Domain <span className="text-meta-1">*</span>
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select name='s_domain' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                      <option value="">kia-the-best</option>
-                      <option value="">bmw-cool</option>
+                    <select
+                      {
+                      ...register('s_domain', {
+                        required: 'Домен должен быть выбран!',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+
+                      <option value="0">Выберите домен сервиса </option>
+                      <option value="14">kia-the-best</option>
+                      <option value="17">bmw-cool</option>
                     </select>
                     <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                       <svg
@@ -67,10 +138,17 @@ const FormServiceConfig = () => {
                     Тип сервиса <span className="text-meta-1">*</span>
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select name='s_type' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                      <option value="">Авто</option>
-                      <option value="">Кузовной</option>
-                      <option value="">Сервис</option>
+                    <select
+                      {
+                      ...register('s_type', {
+                        required: 'Домен должен быть выбран!',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                      <option value="0">Выберите тип сервиса</option>
+                      <option value="1">Авто</option>
+                      <option value="2">Кузовной</option>
+                      <option value="3">Сервис</option>
                     </select>
                     <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                       <svg
@@ -98,7 +176,14 @@ const FormServiceConfig = () => {
                     Бренд <span className="text-meta-1">*</span>
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select name='s_brand' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                    <select
+                      {
+                      ...register('s_brand', {
+                        required: 'Бренд должен быть выбран!',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                      <option value="0">Выберите бренд</option>
                       <option value="">BMW</option>
                       <option value="">Chevrolet</option>
                       <option value="">Ford</option>
@@ -133,7 +218,14 @@ const FormServiceConfig = () => {
                     Модели <span className="text-meta-1">*</span>
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select name='s_model' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                    <select
+                      {
+                      ...register('s_model', {
+                        required: 'Бренд должен быть выбран!',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                      <option value="0">Выберите модель</option>
                       <option value="i3">i3</option>
                       <option value="i8">i8</option>
                     </select>
@@ -163,7 +255,11 @@ const FormServiceConfig = () => {
                     Название сервиса<span className="text-meta-1">*</span>
                   </label>
                   <input
-                    name='s_name'
+                    {
+                    ...register('s_name', {
+                      required: 'Имя для сервиса обязательно!',
+                    })
+                    }
                     type="text"
                     placeholder="Введите название сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -174,9 +270,13 @@ const FormServiceConfig = () => {
                     Заголовок для title сервиса<span className="text-meta-1">*</span>
                   </label>
                   <input
-                    name='s_title'
+                    {
+                    ...register('s_title', {
+                      required: 'Title для сервиса обязателен!',
+                    })
+                    }
                     type="text"
-                    placeholder="Введите название сервиса"
+                    placeholder="Введите загаловок title сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                 </div>
@@ -185,9 +285,13 @@ const FormServiceConfig = () => {
                     Описание сервиса<span className="text-meta-1">*</span>
                   </label>
                   <textarea
-                    name='s_description'
+                    {
+                    ...register('s_description', {
+                      required: 'Описание сервиса обязателено',
+                    })
+                    }
                     rows={6}
-                    placeholder="Введите комментарий"
+                    placeholder="Введите описание сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   ></textarea>
                 </div>
@@ -195,14 +299,18 @@ const FormServiceConfig = () => {
                   <label className="mb-2.5 block text-black dark:text-white">
                     Текст политики обработки персональных данных<span className="text-meta-1">*</span>
                   </label>
-                  <ReactQuill theme="snow" value={value} onChange={setValue} />
+                  <ReactQuill
+                    theme="snow"
+                    value={value}
+                    onChange={setValue}
+                  />
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-2/12">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Редирект  <span className="text-meta-1">*</span>
                     </label>
-                    <SwitcherTwo name='r_is' />
+                    <SwitcherTwo name='r_is' cb={setURL} />
                   </div>
 
                   <div className="w-full xl:w-11/12">
@@ -210,7 +318,15 @@ const FormServiceConfig = () => {
                       URL <span className="text-meta-1">*</span>
                     </label>
                     <input
-                      name='r_url'
+                      {
+                      ...register('r_url', {
+                        pattern: {
+                          value: /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?\/[a-zA-Z0-9]{2,}/,
+                          message: 'URL должен быть формата https://example.org/news'
+                        }
+                      })
+                      }
+                      disabled={isRedirect}
                       type="text"
                       placeholder="Введите URL для перенаправления"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -222,7 +338,14 @@ const FormServiceConfig = () => {
                     Таймзона <span className="text-meta-1">*</span>
                   </label>
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select name='timezone' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                    <select
+                      {
+                      ...register('r_timezone', {
+                        required: 'Выбирете таймзону',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                      <option value="">Выбирете таймзону</option>
                       <option value="">Europa/Moscow</option>
                       <option value="">Europa/Berlin</option>
                     </select>
@@ -258,7 +381,11 @@ const FormServiceConfig = () => {
                       Название <span className="text-meta-1">*</span>
                     </label>
                     <input
-                      name='ac_name'
+                      {
+                      ...register('ac_name', {
+                        required: 'Введите название АЦ',
+                      })
+                      }
                       type="text"
                       placeholder="Введите название АЦ"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -270,9 +397,17 @@ const FormServiceConfig = () => {
                       Телефон <span className="text-meta-1">*</span>
                     </label>
                     <input
-                      name='ac_phone'
+                      placeholder="9000000000"
+                      {
+                      ...register('ac_phone', {
+                        required: 'Поле обязательно к заполнению!',
+                        pattern: {
+                          value: /(?=(^([^\d]*?\d){10}$))/,
+                          message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
+                        }
+                      })
+                      }
                       type="text"
-                      placeholder="Введите телефон"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -282,7 +417,11 @@ const FormServiceConfig = () => {
                     Адрес <span className="text-meta-1">*</span>
                   </label>
                   <input
-                    name='ac_address'
+                    {
+                    ...register('ac_address', {
+                      required: 'Введите название АЦ',
+                    })
+                    }
                     type="text"
                     placeholder="Введите адрес АЦ"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -293,7 +432,15 @@ const FormServiceConfig = () => {
                     Email<span className="text-meta-1">*</span>
                   </label>
                   <input
-                    name='ac_email'
+                    {
+                    ...register('ac_email', {
+                      required: 'Поле обязательно к заполнению!',
+                      pattern: {
+                        value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: 'Введите корректный email'
+                      }
+                    })
+                    }
                     type="text"
                     placeholder="Введите Email"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -310,7 +457,11 @@ const FormServiceConfig = () => {
                       Имя <span className="text-meta-1">*</span>
                     </label>
                     <input
-                      name='c_name'
+                      {
+                      ...register('c_name', {
+                        required: 'Введите имя консультанта',
+                      })
+                      }
                       type="text"
                       placeholder="Введите имя констультанта"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -320,7 +471,14 @@ const FormServiceConfig = () => {
                     <label className="mb-2.5 block text-black dark:text-white">
                       Пол <span className="text-meta-1">*</span>
                     </label>
-                    <select name='c_male' className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                    <select
+                      {
+                      ...register('c_male', {
+                        required: 'Введите имя консультанта',
+                      })
+                      }
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                      <option value="1">Выбирете пол</option>
                       <option value="1">Мужской</option>
                       <option value="0">Женский</option>
                     </select>
@@ -332,7 +490,9 @@ const FormServiceConfig = () => {
                     </label>
                     <input
                       type="file"
-                      name='c_photo'
+                      {...register("c_photo", {
+                        required: false
+                      })}
                       className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
                   </div>
@@ -342,7 +502,12 @@ const FormServiceConfig = () => {
                     BIO<span className="text-meta-1">*</span>
                   </label>
                   <textarea
-                    name='c_desc'
+
+                    {
+                    ...register('c_desc', {
+                      required: 'Введите имя консультанта',
+                    })
+                    }
                     rows={6}
                     placeholder="Введите BIO"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
