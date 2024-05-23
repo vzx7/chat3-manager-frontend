@@ -4,16 +4,59 @@ import fireToast from '../hooks/fireToast';
 import { useForm } from "react-hook-form";
 
 const AddManager = () => {
+
   const {
     register,
     formState: { errors },
+    setError,
+    reset,
     handleSubmit
   } = useForm({
     mode: 'onBlur'
   });
 
-  const onSubmit = (data: any) => {
-    alert(JSON.stringify(data));
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    console.log(data.selectedfile[0]);
+    const file = data.selectedfile[0];
+    const accessImgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+    let isFileError = false;
+    let fileErrorMsg = '';
+    if (!accessImgTypes.includes(file.type)) {
+      isFileError = true;
+      fileErrorMsg = "Допустима загрузка только изображений в формате (png, svg, jpeg, gif)";
+    } else if (file.size > 500000) {
+      isFileError = true;
+      fileErrorMsg = "Изображение слишком тяжелое. Допустимо изображение весом не более 500кб.";
+    }
+
+    if (isFileError) {
+      setError("selectedfile", {
+        type: "filetype",
+        message: fileErrorMsg
+      });
+
+      return;
+    }
+
+
+
+    const formData = new FormData();
+    formData.append("selectedfile", data.selectedfile[0]);
+    formData.append("fullName", data.fullName);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("emailAddress", data.emailAddress);
+    formData.append("bio", data.fullName);
+
+    reset();
+
+    const requestOptions = {
+      method: "POST",
+      // headers: { 'Content-Type': 'application/json' },
+      body: formData
+    };
+    return;
+
   }
 
   function TextFieldError({ error, errors }: { error?: any, errors: any }) {
@@ -24,40 +67,10 @@ const AddManager = () => {
       </p>
     ) : null;
   }
-/*   const [modalOpen, setModalOpen] = useState(false);
-  const [rows, setRows] = useState(localStorage.getItem("alertSettings")?JSON.parse(localStorage.getItem("alertSettings")):[]);
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem("alertSettings", JSON.stringify(rows));
-  }, [rows]);
-  const [rowToEdit, setRowToEdit] = useState(null);
-
-  const handleDeleteRow = (targetIndex) => {
-    setRows(rows.filter((_, idx) => idx !== targetIndex));
-  };
-
-  const handleEditRow = (idx) => {
-    setRowToEdit(idx);
-
-    setModalOpen(true);
-  };
-
-  const handleSubmit = (newRow) => {
-    rowToEdit === null
-      ? setRows([...rows, newRow])
-      : setRows(
-          rows.map((currRow, idx) => {
-            if (idx !== rowToEdit) return currRow;
-
-            return newRow;
-          })
-        ); 
-  };*/
 
   return (
     <>
       <div className="mx-auto max-w-270">
-        
         <Breadcrumb pageName="Добавить менеджера" />
 
         <div className="grid grid-cols-5 gap-8">
@@ -138,7 +151,7 @@ const AddManager = () => {
                           ...register('phoneNumber', {
                             required: 'Поле обязательно к заполнению!',
                             pattern: {
-                              value: /[0-9]{10}/,
+                              value: /(?=(^([^\d]*?\d){10}$))/,
                               message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
                             }
                           })
@@ -243,10 +256,12 @@ const AddManager = () => {
 
                       <textarea
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        name="bio"
                         id="bio"
                         rows={6}
                         placeholder="Добавить комментарий о менеджере"
+                        {...register("bio", {
+                          required: false
+                        })}
                         ></textarea>
                     </div>
                   </div>
@@ -277,6 +292,9 @@ const AddManager = () => {
                       type="file"
                       accept="image/*"
                       className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                      {...register("selectedfile", {
+                        required: false
+                      })}
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
@@ -314,6 +332,7 @@ const AddManager = () => {
                       <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
                       <p>(max, 800 X 800px)</p>
                     </div>
+                    <TextFieldError errors={errors} error={errors['selectedfile']?.message} />
                   </div>
 
                   <div className="flex justify-end gap-4.5">
