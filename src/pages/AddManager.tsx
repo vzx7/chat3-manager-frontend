@@ -195,8 +195,7 @@ const AddManager = () => {
                           })
                         }
                       />
-                      <TextFieldError errors={errors} error={errors['emailAddress']?.message} 
-                      />
+                      <TextFieldError errors={errors} error={errors['emailAddress']?.message} />
                     </div>
                   </div>
 

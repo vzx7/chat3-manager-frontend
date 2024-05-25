@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './FormServiceConfig.css'
 import { FormHelper } from '../../logic/FormHelper';
+import TextFieldError from '../../components/TextFieldError';
 
 /**
  * todo
@@ -46,7 +47,7 @@ const FormServiceConfig = () => {
 
       return;
     }
-    
+
     const formData = new FormData();
     formData.append("selectedfile", data.selectedfile[0]);
     formData.append("fullName", data.fullName);
@@ -56,23 +57,10 @@ const FormServiceConfig = () => {
     
     reset();
 
-    const requestOptions = {
-      method: "POST",
-      // headers: { 'Content-Type': 'application/json' },
-      body: formData
-    };
-    return;
 
   }
-  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
-    console.log(errors)
-    return error ? (
-      <p className="text-danger mt-2 text-sm" >
-        {error}
-      </p>
-    ) : null;
-  }
-  const modules =  {
+
+  const editorModules =  {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
       ['blockquote', 'code-block'],
@@ -149,6 +137,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['s_domain']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -187,6 +176,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['s_type']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -229,6 +219,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['s_brand']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -266,6 +257,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['s_model']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -296,6 +288,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите загаловок title сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  <TextFieldError errors={errors} error={errors['s_title']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -311,6 +304,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите описание сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   ></textarea>
+                  <TextFieldError errors={errors} error={errors['s_description']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -320,9 +314,10 @@ const FormServiceConfig = () => {
                     theme="snow"
                     value={personalPoliceValue}
                     onChange={setPersonalPoiiceValue}
-                    modules={modules}
+                    modules={editorModules}
                     
                   />
+                  <TextFieldError errors={errors} error={errors['s_personal-police']?.message} />
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-2/12">
@@ -351,6 +346,7 @@ const FormServiceConfig = () => {
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
+                  <TextFieldError errors={errors} error={errors['r_url']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -388,6 +384,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['r_timezone']?.message} />
                 </div>
                 <div className=" border-stroke py-4 dark:border-strokedark border-t-2 border-b-2 mt-7">
                   <h3 className="text-black dark:text-white font-bold text-lg">
@@ -409,6 +406,7 @@ const FormServiceConfig = () => {
                       placeholder="Введите название АЦ"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
+                    <TextFieldError errors={errors} error={errors['ac_name']?.message} />
                   </div>
 
                   <div className="w-full xl:w-1/2">
@@ -430,6 +428,7 @@ const FormServiceConfig = () => {
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
+                  <TextFieldError errors={errors} error={errors['ac_phone']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -445,6 +444,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите адрес АЦ"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  <TextFieldError errors={errors} error={errors['ac_address']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -464,6 +464,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите Email"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  <TextFieldError errors={errors} error={errors['ac_email']?.message} />
                 </div>
                 <div className=" border-stroke py-4 dark:border-strokedark border-t-2 border-b-2 mt-7">
                   <h3 className="text-black dark:text-white font-bold text-lg">
@@ -485,6 +486,7 @@ const FormServiceConfig = () => {
                       placeholder="Введите имя констультанта"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
+                    <TextFieldError errors={errors} error={errors['c_name']?.message} />
                   </div>
                   <div className="w-full xl:w-1/5">
                     <label className="mb-2.5 block text-black dark:text-white">
@@ -501,6 +503,7 @@ const FormServiceConfig = () => {
                       <option value="1">Мужской</option>
                       <option value="0">Женский</option>
                     </select>
+                    <TextFieldError errors={errors} error={errors['c_male']?.message} />
                   </div>
 
                   <div className="w-full xl:w-2/5">
@@ -515,6 +518,7 @@ const FormServiceConfig = () => {
                       className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                     />
                   </div>
+                  <TextFieldError errors={errors} error={errors['c_photo']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -531,6 +535,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите BIO"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   ></textarea>
+                  <TextFieldError errors={errors} error={errors['c_desc']?.message} />
                 </div>
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
