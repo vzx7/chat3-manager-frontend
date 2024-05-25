@@ -36,26 +36,17 @@ const FormServiceConfig = () => {
     console.log(data);
 
     const file = data.c_photo[0];
-    const accessImgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
-    let isFileError = false;
-    let fileErrorMsg = '';
-    if (!accessImgTypes.includes(file.type)) {
-      isFileError = true;
-      fileErrorMsg = "Допустима загрузка только изображений в формате (png, svg, jpeg, gif)";
-    } else if (file.size > 500000) {
-      isFileError = true;
-      fileErrorMsg = "Изображение слишком тяжелое. Допустимо изображение весом не более 500кб.";
-    }
+    const error = FormHelper.validateImg(file);
 
-    if (isFileError) {
-      setError("c_photo", {
+    if (error.is) {
+      setError("selectedfile", {
         type: "filetype",
-        message: fileErrorMsg
+        message: error.msg
       });
 
       return;
     }
-
+    
     const formData = new FormData();
     formData.append("selectedfile", data.selectedfile[0]);
     formData.append("fullName", data.fullName);

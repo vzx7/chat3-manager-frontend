@@ -20,21 +20,12 @@ const AddManager = () => {
     console.log(data);
     console.log(data.selectedfile[0]);
     const file = data.selectedfile[0];
-    const accessImgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
-    let isFileError = false;
-    let fileErrorMsg = '';
-    if (!accessImgTypes.includes(file.type)) {
-      isFileError = true;
-      fileErrorMsg = "Допустима загрузка только изображений в формате (png, svg, jpeg, gif)";
-    } else if (file.size > 500000) {
-      isFileError = true;
-      fileErrorMsg = "Изображение слишком тяжелое. Допустимо изображение весом не более 500кб.";
-    }
+    const error = FormHelper.validateImg(file);
 
-    if (isFileError) {
+    if (error.is) {
       setError("selectedfile", {
         type: "filetype",
-        message: fileErrorMsg
+        message: error.msg
       });
 
       return;
