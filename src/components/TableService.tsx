@@ -1,4 +1,19 @@
+import { useNavigate } from "react-router-dom";
+import { APIHelper } from "../logic/APIHelper";
+
 const TableService = () => {
+  const navigate = useNavigate();
+  const onClick = (ev: any) => {
+    console.log(ev.currentTarget)
+    const { active, id } = ev.currentTarget.dataset;
+    if (active === 2) {
+      navigate('/service-config/' + id);
+      return;
+    }
+
+    const is = active === 0 ? true : false;
+    APIHelper.setActivateService({ id, is }).then().catch();
+  }
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -37,7 +52,7 @@ const TableService = () => {
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <div className="flex items-center space-x-3.5">
-                  <button className="hover:text-primary">
+                  <button onClick={onClick} data-active={1} data-id={12} className="hover:text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>

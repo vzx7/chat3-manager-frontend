@@ -51,7 +51,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    static async setActivateDomain(params: Activate): Promise<boolean> { 
+    static async setActivateService(params: Activate): Promise<boolean> { 
         const { data } = await axios.patch(
             API_URL,
             params,
