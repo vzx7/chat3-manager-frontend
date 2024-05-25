@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import { redirect } from 'react-router-dom';
 
 const FormServiceInit = lazy(() => import('../pages/Form/FormServiceInit'));
 const FormServiceConfig = lazy(() => import('../pages/Form/FormServiceConfig'));
@@ -8,7 +9,7 @@ const ServiceList = lazy(() => import('../pages/ServiceList'));
 
 const coreRoutes = [
   {
-    path: '/service-init',
+    path: '/service-create',
     title: 'Инициализация сервиса',
     component: FormServiceInit,
   },
