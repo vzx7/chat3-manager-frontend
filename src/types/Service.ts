@@ -7,15 +7,13 @@ export type Service = {
     model: string,
     description: string,
     personalPolice: string,
-    redirect?: {
-        url: string,
-        timezone: string
-    }
+    url?: string,
     autoCenter: {
         name: string,
         phone: number,
         address: string,
-        email: string
+        email: string,
+        timezone: string
     }
     consultant: {
         name: string,
