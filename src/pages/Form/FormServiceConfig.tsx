@@ -3,19 +3,15 @@ import SwitcherTwo from '../../components/SwitcherTwo';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import './FormServiceConfig.css'
 import { FormHelper } from '../../logic/FormHelper';
 import TextFieldError from '../../components/TextFieldError';
+import { Service } from '../../types/Service';
+import { APIHelper } from '../../logic/APIHelper';
+import 'react-quill/dist/quill.snow.css';
+import './FormServiceConfig.css'
 
 /**
- * todo
- * Поля: 
- * - Тип приложения - селект (сервисные или кузовные)
- * - Марка авто - селект
- * - Список моделей, в зависимости от марки авто
- * - имя и фот консультанта
- * 
+ * Настройка сервиса
  * @returns 
  */
 const FormServiceConfig = () => {
@@ -30,35 +26,6 @@ const FormServiceConfig = () => {
   } = useForm({
     mode: 'onBlur'
   });
-
-  const setURL = (is: boolean) => setRedirect(is);
-
-  const onSubmit = async (data: any) => {
-    console.log(data);
-
-    const file = data.c_photo[0];
-    const error = FormHelper.validateImg(file);
-
-    if (error.is) {
-      setError("selectedfile", {
-        type: "filetype",
-        message: error.msg
-      });
-
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("selectedfile", data.selectedfile[0]);
-    formData.append("fullName", data.fullName);
-    formData.append("phoneNumber", data.phoneNumber);
-    formData.append("emailAddress", data.emailAddress);
-    formData.append("bio", data.fullName);
-    
-    reset();
-
-
-  }
 
   const editorModules =  {
     toolbar: [
@@ -84,6 +51,62 @@ const FormServiceConfig = () => {
       ['clean']                                         // remove formatting button
     ]
   };
+
+  const setURL = (is: boolean) => setRedirect(is);
+
+  const onSubmit = async (data: any) => {
+    console.log(data);
+
+    const file = data.c_photo[0];
+    const error = FormHelper.validateImg(file);
+
+    if (error.is) {
+      setError("selectedfile", {
+        type: "filetype",
+        message: error.msg
+      });
+
+      return;
+    }
+
+    const formData: Service = {
+      name: data.name,
+      type: data.type,
+      domain: data.domain,
+      title: data.title,
+      brand: data.brand,
+      model: data.model,
+      description: data.description,
+      personalPolice: personalPoliceValue,
+      autoCenter: {
+        name: data.ac_name,
+        phone: data.ac_phone,
+        address: data.ac_address,
+        email: data.ac_email
+      },
+      consultant: {
+        name: data.c_name,
+        male: data.c_male,
+        photo: file,
+        description: data.c_description
+      }
+    }
+
+    if(data.url && data.timezone) {
+      formData.redirect = {
+        url: data.url,
+        timezone: data.timezone
+      }
+    }
+
+    APIHelper.setService(formData).then().catch();
+    
+    reset();
+
+  }
+
+
+
   return (
     <>
       <Breadcrumb pageName="Конфигурация сервиса" />
@@ -107,7 +130,7 @@ const FormServiceConfig = () => {
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
                       {
-                      ...register('s_domain', {
+                      ...register('domain', {
                         required: 'Домен должен быть выбран!',
                       })
                       }
@@ -137,7 +160,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
-                  <TextFieldError errors={errors} error={errors['s_domain']?.message} />
+                  <TextFieldError errors={errors} error={errors['domain']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -146,7 +169,7 @@ const FormServiceConfig = () => {
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
                       {
-                      ...register('s_type', {
+                      ...register('type', {
                         required: 'Домен должен быть выбран!',
                       })
                       }
@@ -176,7 +199,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
-                  <TextFieldError errors={errors} error={errors['s_type']?.message} />
+                  <TextFieldError errors={errors} error={errors['type']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -228,7 +251,7 @@ const FormServiceConfig = () => {
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
                       {
-                      ...register('s_model', {
+                      ...register('model', {
                         required: 'Бренд должен быть выбран!',
                       })
                       }
@@ -257,7 +280,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
-                  <TextFieldError errors={errors} error={errors['s_model']?.message} />
+                  <TextFieldError errors={errors} error={errors['model']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -265,7 +288,7 @@ const FormServiceConfig = () => {
                   </label>
                   <input
                     {
-                    ...register('s_name', {
+                    ...register('name', {
                       required: 'Имя для сервиса обязательно!',
                     })
                     }
@@ -273,6 +296,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите название сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  <TextFieldError errors={errors} error={errors['name']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -280,7 +304,7 @@ const FormServiceConfig = () => {
                   </label>
                   <input
                     {
-                    ...register('s_title', {
+                    ...register('title', {
                       required: 'Title для сервиса обязателен!',
                     })
                     }
@@ -288,7 +312,7 @@ const FormServiceConfig = () => {
                     placeholder="Введите загаловок title сервиса"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  <TextFieldError errors={errors} error={errors['s_title']?.message} />
+                  <TextFieldError errors={errors} error={errors['title']?.message} />
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -333,7 +357,7 @@ const FormServiceConfig = () => {
                     </label>
                     <input
                       {
-                      ...register('r_url', {
+                      ...register('url', {
                         pattern: {
                           value: FormHelper.REGEXP.url,
                           message: 'URL должен быть формата https://example.org/news'
@@ -346,7 +370,7 @@ const FormServiceConfig = () => {
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
-                  <TextFieldError errors={errors} error={errors['r_url']?.message} />
+                  <TextFieldError errors={errors} error={errors['url']?.message} />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -355,7 +379,7 @@ const FormServiceConfig = () => {
                   <div className="relative z-20 bg-transparent dark:bg-form-input">
                     <select
                       {
-                      ...register('r_timezone', {
+                      ...register('timezone', {
                         required: 'Выбирете таймзону',
                       })
                       }
@@ -384,7 +408,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
-                  <TextFieldError errors={errors} error={errors['r_timezone']?.message} />
+                  <TextFieldError errors={errors} error={errors['timezone']?.message} />
                 </div>
                 <div className=" border-stroke py-4 dark:border-strokedark border-t-2 border-b-2 mt-7">
                   <h3 className="text-black dark:text-white font-bold text-lg">
@@ -527,7 +551,7 @@ const FormServiceConfig = () => {
                   <textarea
 
                     {
-                    ...register('c_desc', {
+                    ...register('c_description', {
                       required: 'Введите имя консультанта',
                     })
                     }

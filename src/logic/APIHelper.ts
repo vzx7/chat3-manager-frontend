@@ -1,5 +1,7 @@
 import axios from "axios";
 import { Manager } from "../types/Manager";
+import { Service } from "../types/Service";
+import { Activate } from "../types/Activate";
 
 /**
  * Класс для взаимодействия с API
@@ -7,12 +9,59 @@ import { Manager } from "../types/Manager";
 export class APIHelper {
     readonly API_URL = '';
 
+    /**
+     * Получиь сервис по id
+     * @param serviceId 
+     * @returns 
+     */
+    static async getService(serviceId: number): Promise<Service> { 
+        const { data } = await axios.get(API_URL + serviceId);
+        return data;
+    }
 
-    static getDomain() { }
-    static setDomain() { }
-    static getDomains() { }
-    static setActivateDomain(domainId: number) { 
-        
+    /**
+     * Настройка сервиса
+     * @param service 
+     * @returns 
+     */
+    static async setService(service: Service): Promise<boolean> { 
+        const { data } = await axios.patch(
+            API_URL,
+            service,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        console.log(data)
+        return true;
+    }
+
+    /**
+     * Получить все сервисы
+     * @returns 
+     */
+    static async getServices(): Promise<Service[]> { 
+        const { data } = await axios.get(API_URL);
+        return data;
+    }
+
+    /**
+     * Активировать/деективировать сервис
+     * @param params 
+     * @returns 
+     */
+    static async setActivateDomain(params: Activate): Promise<boolean> { 
+        const { data } = await axios.patch(
+            API_URL,
+            params,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        console.log(data)
+        return true;
     }
 
     /**
@@ -28,7 +77,7 @@ export class APIHelper {
      * Метод добавления менеджера
      * @param manager 
      */
-    static async addManager(manager: Manager) {
+    static async addManager(manager: Manager): Promise<boolean> {
         const { data } = await axios.post(
             API_URL,
             manager,
@@ -38,6 +87,7 @@ export class APIHelper {
                 }
             });
         console.log(data)
+        return true;
     }
 
     /**
@@ -49,8 +99,33 @@ export class APIHelper {
         return data;
     }
 
-    static setAcivateManager(is: boolean) { }
-    static removeManager(managerId: number) { }
+    /**
+     * Активировать/деактивировать менеджера
+     * @param params 
+     * @returns 
+     */
+    static async setAcivateManager(params: Activate) { 
+        const { data } = await axios.patch(
+            API_URL,
+            params,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        console.log(data)
+        return true;
+    }
+
+    /**
+     * Удалить менеджера
+     * @param managerId 
+     * @returns 
+     */
+    static async removeManager(managerId: number) { 
+        const { data } = await axios.delete(API_URL + managerId);
+        return data;
+    }
 }
 
 const API_URL = ''
