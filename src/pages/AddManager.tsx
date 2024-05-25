@@ -2,6 +2,7 @@ import Breadcrumb from '../components/Breadcrumb';
 import noname from '../images/avatars/noname.png';
 import fireToast from '../hooks/fireToast';
 import { useForm } from "react-hook-form";
+import { FormHelper } from '../logic/FormHelper';
 
 const AddManager = () => {
 
@@ -38,8 +39,6 @@ const AddManager = () => {
 
       return;
     }
-
-
 
     const formData = new FormData();
     formData.append("selectedfile", data.selectedfile[0]);
@@ -125,7 +124,7 @@ const AddManager = () => {
                             ...register('fullName', {
                               required: 'Поле обязательно к заполнению!',
                               pattern: {
-                                value: /^(?=.{1,40}$)[а-яёА-ЯЁ]+(?:[-' ][а-яёА-ЯЁ]+)*$/,
+                                value: FormHelper.REGEXP.FIO,
                                 message: 'Поле должно содержать ФИО - Иван Иванович Иванов (на кириллице)'
                               }
                             })
@@ -151,7 +150,7 @@ const AddManager = () => {
                           ...register('phoneNumber', {
                             required: 'Поле обязательно к заполнению!',
                             pattern: {
-                              value: /(?=(^([^\d]*?\d){10}$))/,
+                              value: FormHelper.REGEXP.phone,
                               message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
                             }
                           })
@@ -203,7 +202,7 @@ const AddManager = () => {
                           ...register('emailAddress', {
                             required: 'Поле обязательно к заполнению!',
                             pattern: {
-                              value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              value: FormHelper.REGEXP.email,
                               message: 'Введите корректный email'
                             }
                           })

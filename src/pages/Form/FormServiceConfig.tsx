@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './FormServiceConfig.css'
+import { FormHelper } from '../../logic/FormHelper';
 
 /**
  * todo
@@ -348,7 +349,7 @@ const FormServiceConfig = () => {
                       {
                       ...register('r_url', {
                         pattern: {
-                          value: /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?\/[a-zA-Z0-9]{2,}/,
+                          value: FormHelper.REGEXP.url,
                           message: 'URL должен быть формата https://example.org/news'
                         }
                       })
@@ -429,7 +430,7 @@ const FormServiceConfig = () => {
                       ...register('ac_phone', {
                         required: 'Поле обязательно к заполнению!',
                         pattern: {
-                          value: /(?=(^([^\d]*?\d){10}$))/,
+                          value: FormHelper.REGEXP.phone,
                           message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
                         }
                       })
@@ -463,7 +464,7 @@ const FormServiceConfig = () => {
                     ...register('ac_email', {
                       required: 'Поле обязательно к заполнению!',
                       pattern: {
-                        value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        value: FormHelper.REGEXP.email,
                         message: 'Введите корректный email'
                       }
                     })
