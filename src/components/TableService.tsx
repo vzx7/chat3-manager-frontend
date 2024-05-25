@@ -4,7 +4,6 @@ import { APIHelper } from "../logic/APIHelper";
 const TableService = () => {
   const navigate = useNavigate();
   const onClick = (ev: any) => {
-    console.log(ev.currentTarget)
     const { active, id } = ev.currentTarget.dataset;
     if (active === 2) {
       navigate('/service-config/' + id);
