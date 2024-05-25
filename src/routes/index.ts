@@ -13,7 +13,7 @@ const coreRoutes = [
     component: FormServiceInit,
   },
   {
-    path: '/service-config',
+    path: '/service-config/:id',
     title: 'Настройка сервиса',
     component: FormServiceConfig,
   },
