@@ -3,6 +3,8 @@ import noname from '../images/avatars/noname.png';
 import fireToast from '../hooks/fireToast';
 import { useForm } from "react-hook-form";
 import { FormHelper } from '../logic/FormHelper';
+import { Manager } from '../types/Manager';
+import { APIHelper } from '../logic/APIHelper';
 
 const AddManager = () => {
 
@@ -18,10 +20,9 @@ const AddManager = () => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    console.log(data.selectedfile[0]);
     const file = data.selectedfile[0];
     const error = FormHelper.validateImg(file);
-
+    
     if (error.is) {
       setError("selectedfile", {
         type: "filetype",
@@ -31,22 +32,25 @@ const AddManager = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("selectedfile", data.selectedfile[0]);
-    formData.append("fullName", data.fullName);
-    formData.append("phoneNumber", data.phoneNumber);
-    formData.append("emailAddress", data.emailAddress);
-    formData.append("bio", data.fullName);
+    const formData: Manager = {
+      fio: data.fullName,
+      photo: file,
+      phone: data.phoneNumber,
+      email: data.emailAddress
+    };
+    const { bio } = data;
+
+    if (bio) {
+      formData.bio = bio
+    }
 
     reset();
 
-    const requestOptions = {
-      method: "POST",
-      // headers: { 'Content-Type': 'application/json' },
-      body: formData
-    };
-    return;
+    APIHelper.addManager(formData).then(r => {
+      console.log(r);
+    }).catch(() => {
 
+    });
   }
 
   function TextFieldError({ error, errors }: { error?: any, errors: any }) {
