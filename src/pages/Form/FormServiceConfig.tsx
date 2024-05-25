@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import './FormServiceConfig.css'
 
 /**
  * todo
@@ -16,7 +17,7 @@ import 'react-quill/dist/quill.snow.css';
  * @returns 
  */
 const FormServiceConfig = () => {
-  const [value, setValue] = useState('');
+  const [personalPoliceValue, setPersonalPoiiceValue] = useState('');
   const [isRedirect, setRedirect] = useState(true);
   const {
     register,
@@ -79,6 +80,30 @@ const FormServiceConfig = () => {
       </p>
     ) : null;
   }
+  const modules =  {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video', 'formula'],
+    
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
+    
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    
+      [{ 'color': ['black'] }, { 'background': [] }],          // dropdown with defaults from theme
+      [{ 'font': [
+        { 'color': 'White' }
+      ] }],
+      [{ 'align': [] }],
+    
+      ['clean']                                         // remove formatting button
+    ]
+  };
   return (
     <>
       <Breadcrumb pageName="Конфигурация сервиса" />
@@ -301,8 +326,10 @@ const FormServiceConfig = () => {
                   </label>
                   <ReactQuill
                     theme="snow"
-                    value={value}
-                    onChange={setValue}
+                    value={personalPoliceValue}
+                    onChange={setPersonalPoiiceValue}
+                    modules={modules}
+                    
                   />
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
