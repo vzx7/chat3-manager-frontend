@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { FormHelper } from '../logic/FormHelper';
 import { Manager } from '../types/Manager';
 import { APIHelper } from '../logic/APIHelper';
+import TextFieldError from '../components/TextFieldError';
 
 const AddManager = () => {
 
@@ -22,7 +23,7 @@ const AddManager = () => {
     console.log(data);
     const file = data.selectedfile[0];
     const error = FormHelper.validateImg(file);
-    
+
     if (error.is) {
       setError("selectedfile", {
         type: "filetype",
@@ -51,15 +52,6 @@ const AddManager = () => {
     }).catch(() => {
 
     });
-  }
-
-  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
-    console.log(errors)
-    return error ? (
-      <p className="text-danger mt-2 text-sm" >
-        {error}
-      </p>
-    ) : null;
   }
 
   return (
@@ -336,14 +328,13 @@ const AddManager = () => {
                       type="submit"
                       onClick={fireToast}
                     >
-                      Save
+                      Сохранить
                     </button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>
