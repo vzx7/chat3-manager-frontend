@@ -1,45 +1,63 @@
 import Breadcrumb from '../components/Breadcrumb';
 import noname from '../images/avatars/noname.png';
 import fireToast from '../hooks/fireToast';
-import { Table } from "../components/TableSettings";
-import { Modal } from "../components/ModalSettings";
-import { useState,useEffect } from "react";
-const Settings = () => {
-/*   const [modalOpen, setModalOpen] = useState(false);
-  const [rows, setRows] = useState(localStorage.getItem("alertSettings")?JSON.parse(localStorage.getItem("alertSettings")):[]);
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem("alertSettings", JSON.stringify(rows));
-  }, [rows]);
-  const [rowToEdit, setRowToEdit] = useState(null);
+import { useForm } from "react-hook-form";
+import { FormHelper } from '../logic/FormHelper';
+import { Manager } from '../types/Manager';
+import { APIHelper } from '../logic/APIHelper';
+import TextFieldError from '../components/TextFieldError';
 
-  const handleDeleteRow = (targetIndex) => {
-    setRows(rows.filter((_, idx) => idx !== targetIndex));
-  };
+const AddManager = () => {
 
-  const handleEditRow = (idx) => {
-    setRowToEdit(idx);
+  const {
+    register,
+    formState: { errors },
+    setError,
+    reset,
+    handleSubmit
+  } = useForm({
+    mode: 'onBlur'
+  });
 
-    setModalOpen(true);
-  };
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    const file = data.selectedfile[0];
+    const error = FormHelper.validateImg(file);
 
-  const handleSubmit = (newRow) => {
-    rowToEdit === null
-      ? setRows([...rows, newRow])
-      : setRows(
-          rows.map((currRow, idx) => {
-            if (idx !== rowToEdit) return currRow;
+    if (error.is) {
+      setError("selectedfile", {
+        type: "filetype",
+        message: error.msg
+      });
 
-            return newRow;
-          })
-        ); 
-  };*/
+      return;
+    }
+
+    const formData: Manager = {
+      fio: data.fullName,
+      photo: file,
+      phone: data.phoneNumber,
+      email: data.emailAddress
+    };
+    const { bio } = data;
+
+    if (bio) {
+      formData.bio = bio
+    }
+
+    reset();
+
+    APIHelper.addManager(formData).then(r => {
+      console.log(r);
+    }).catch(() => {
+
+    });
+  }
 
   return (
     <>
       <div className="mx-auto max-w-270">
-        
-        <Breadcrumb pageName="Добавление менеджера" />
+        <Breadcrumb pageName="Добавить менеджера" />
 
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
@@ -50,14 +68,14 @@ const Settings = () => {
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
+                <form  onSubmit={handleSubmit(onSubmit)} action="#">
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                     <div className="w-full sm:w-1/2">
                       <label
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="fullName"
                       >
-                        Полное имя
+                        Полное имя <span className="text-meta-1">*</span>
                       </label>
                       <div className="relative">
                         <span className="absolute left-4.5 top-4">
@@ -87,12 +105,19 @@ const Settings = () => {
                         </span>
                         <input
                           className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="text"
-                          name="fullName"
                           id="fullName"
-                          placeholder="Devid Jhon"
-                          defaultValue="Devid Jhon"
+                          placeholder="ФИО"
+                          {
+                            ...register('fullName', {
+                              required: 'Поле обязательно к заполнению!',
+                              pattern: {
+                                value: FormHelper.REGEXP.FIO,
+                                message: 'Поле должно содержать ФИО - Иван Иванович Иванов (на кириллице)'
+                              }
+                            })
+                          }
                         />
+                        <TextFieldError errors={errors} error={errors['fullName']?.message} />
                       </div>
                     </div>
 
@@ -101,16 +126,24 @@ const Settings = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="phoneNumber"
                       >
-                        Телефон
+                        Телефон <span className="text-meta-1">*</span>
                       </label>
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="text"
-                        name="phoneNumber"
                         id="phoneNumber"
-                        placeholder="+990 3343 7865"
-                        defaultValue="+990 3343 7865"
+                        placeholder="9000000000"
+                        {
+                          ...register('phoneNumber', {
+                            required: 'Поле обязательно к заполнению!',
+                            pattern: {
+                              value: FormHelper.REGEXP.phone,
+                              message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
+                            }
+                          })
+                        }
                       />
+                      <TextFieldError errors={errors} error={errors['phoneNumber']?.message} />
                     </div>
                   </div>
 
@@ -119,7 +152,7 @@ const Settings = () => {
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="emailAddress"
                     >
-                      Email Address
+                      Email <span className="text-meta-1">*</span>
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
@@ -150,11 +183,19 @@ const Settings = () => {
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="email"
-                        name="emailAddress"
                         id="emailAddress"
                         placeholder="devidjond45@gmail.com"
-                        defaultValue="devidjond45@gmail.com"
+                        {
+                          ...register('emailAddress', {
+                            required: 'Поле обязательно к заполнению!',
+                            pattern: {
+                              value: FormHelper.REGEXP.email,
+                              message: 'Введите корректный email'
+                            }
+                          })
+                        }
                       />
+                      <TextFieldError errors={errors} error={errors['emailAddress']?.message} />
                     </div>
                   </div>
 
@@ -164,7 +205,7 @@ const Settings = () => {
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="Username"
                     >
-                      BIO
+                      Комментарий
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
@@ -200,12 +241,13 @@ const Settings = () => {
 
                       <textarea
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        name="bio"
                         id="bio"
                         rows={6}
-                        placeholder="Write your bio here"
-                        defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut. Donec fermentum blandit aliquet."
-                      ></textarea>
+                        placeholder="Добавить комментарий о менеджере"
+                        {...register("bio", {
+                          required: false
+                        })}
+                        ></textarea>
                     </div>
                   </div>
                   
@@ -235,6 +277,9 @@ const Settings = () => {
                       type="file"
                       accept="image/*"
                       className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                      {...register("selectedfile", {
+                        required: false
+                      })}
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
@@ -272,6 +317,7 @@ const Settings = () => {
                       <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
                       <p>(max, 800 X 800px)</p>
                     </div>
+                    <TextFieldError errors={errors} error={errors['selectedfile']?.message} />
                   </div>
 
                   <div className="flex justify-end gap-4.5">
@@ -281,18 +327,17 @@ const Settings = () => {
                       type="submit"
                       onClick={fireToast}
                     >
-                      Save
+                      Сохранить
                     </button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>
   );
 };
 
-export default Settings;
+export default AddManager;
