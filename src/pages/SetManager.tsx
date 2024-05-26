@@ -6,9 +6,11 @@ import { FormHelper } from '../logic/FormHelper';
 import { Manager } from '../types/Manager';
 import { APIHelper } from '../logic/APIHelper';
 import TextFieldError from '../components/TextFieldError';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
-const AddManager = () => {
-
+const SetManager = () => {
+  const { id } = useParams();
   const {
     register,
     formState: { errors },
@@ -18,6 +20,16 @@ const AddManager = () => {
   } = useForm({
     mode: 'onBlur'
   });
+  
+  let manager: Manager;
+
+  useEffect(() => {
+    if (id) {
+      APIHelper.getManager(+id).then((managerData) => {
+        manager = managerData;
+      }).catch();
+    }
+  }, []);
 
   const onSubmit = async (data: any) => {
     console.log(data);
@@ -47,7 +59,7 @@ const AddManager = () => {
 
     reset();
 
-    APIHelper.addManager(formData).then(r => {
+    APIHelper.SetManager(formData).then(r => {
       console.log(r);
     }).catch(() => {
 
@@ -57,7 +69,7 @@ const AddManager = () => {
   return (
     <>
       <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="Добавить менеджера" />
+        <Breadcrumb pageName={`${id ? 'Редактировать' : 'Добавить'} менеджера`} />
 
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
@@ -340,4 +352,4 @@ const AddManager = () => {
   );
 };
 
-export default AddManager;
+export default SetManager;

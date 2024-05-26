@@ -77,7 +77,7 @@ export class APIHelper {
      * Метод добавления менеджера
      * @param manager 
      */
-    static async addManager(manager: Manager): Promise<boolean> {
+    static async SetManager(manager: Manager): Promise<boolean> {
         const { data } = await axios.post(
             API_URL,
             manager,

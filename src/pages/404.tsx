@@ -1,6 +1,16 @@
-import { NavLink } from "react-router-dom";
+import { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { User } from "../types/User";
 
-const Page404 = () => {
+type Props = {
+  currentUser: User | null
+}
+const Page404 = ({ currentUser } : Props) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!currentUser) navigate('/auth/signin');
+  }, [currentUser])
   return (
     <>
       <div className="col-span-12 xl:col-span-8">

@@ -1,4 +1,5 @@
 export enum Role {
+    noAuth,
     admin,
-    user
+    manager
 }

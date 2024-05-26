@@ -1,10 +1,9 @@
 import { lazy } from 'react';
-import { redirect } from 'react-router-dom';
 
 const FormServiceInit = lazy(() => import('../pages/Form/FormServiceInit'));
 const FormServiceConfig = lazy(() => import('../pages/Form/FormServiceConfig'));
 const Managers = lazy(() => import('../pages/Managers'));
-const AddManager = lazy(() => import('../pages/AddManager'));
+const SetManager = lazy(() => import('../pages/SetManager'));
 const ServiceList = lazy(() => import('../pages/ServiceList'));
 
 const coreRoutes = [
@@ -31,7 +30,12 @@ const coreRoutes = [
   {
     path: '/add-manager',
     title: 'Добавить менеджера',
-    component: AddManager,
+    component: SetManager,
+  },
+  {
+    path: '/edit-manager/:id',
+    title: 'Редактировать менеджера',
+    component: SetManager,
   }
 ];
 

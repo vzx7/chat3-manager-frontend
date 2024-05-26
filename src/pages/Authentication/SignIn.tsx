@@ -1,7 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../images/logo/logo-red-inversion.png';
+import { User } from '../../types/User';
+import { useEffect } from 'react';
+import { Role } from '../../enums/Role';
 
-const SignIn = () => {
+type Props = {
+  doAuth: (user: User) => void
+};
+
+const SignIn = ({ doAuth } : Props) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    //FIXME временно для тестов
+    doAuth({
+      name: 'I',
+      avatar: '',
+      role: Role.admin
+    })
+    navigate('/');
+  },[])
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
