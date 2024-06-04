@@ -3,8 +3,7 @@
  * @param param0 
  * @returns 
  */
-const TextFieldError = function ({ error, errors }: { error?: any, errors: any }) {
-    console.log(errors)
+const TextFieldError = function ({ error }: { error?: any, errors: any }) {
     return error ? (
         <p className="text-danger mt-2 text-sm" >
             {error}
