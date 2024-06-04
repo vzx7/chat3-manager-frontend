@@ -3,6 +3,11 @@ import Logo from '../../images/logo/logo-red-inversion.png';
 import { User } from '../../types/User';
 import { useEffect } from 'react';
 import { Role } from '../../enums/Role';
+import { Manager } from '../../types/Manager';
+import { APIHelper } from '../../logic/APIHelper';
+import { useForm } from 'react-hook-form';
+import { FormHelper } from '../../logic/FormHelper';
+import TextFieldError from '../../components/TextFieldError';
 
 type Props = {
   doAuth: (user: User) => void
@@ -10,15 +15,38 @@ type Props = {
 
 const SignIn = ({ doAuth } : Props) => {
   const navigate = useNavigate();
-  useEffect(() => {
-    //FIXME временно для тестов
-    doAuth({
-      name: 'I',
-      avatar: '',
-      role: Role.admin
-    })
-    navigate('/');
-  },[])
+
+  const {
+    register,
+    formState: { errors },
+    reset,
+    handleSubmit
+  } = useForm({
+    mode: 'onBlur'
+  });
+  
+  const onSubmit = async (data: any) => {
+    console.log(data);
+
+    const formData: Manager = {
+      password: data.password,
+      email: data.email
+    };
+
+    reset();
+
+    APIHelper.login(formData).then((result: any) => {
+      console.log(result);
+/*       doAuth({
+        name: 'I',
+        avatar: '',
+        role: Role.admin
+      })
+      navigate('/'); */
+    }).catch(() => {
+
+    });
+  }
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -166,7 +194,7 @@ const SignIn = ({ doAuth } : Props) => {
                 Авторизация
               </h2>
 
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
@@ -174,6 +202,15 @@ const SignIn = ({ doAuth } : Props) => {
                   <div className="relative">
                     <input
                       type="email"
+                      {
+                        ...register('email', {
+                          required: 'Поле обязательно к заполнению!',
+                          pattern: {
+                            value: FormHelper.REGEXP.email,
+                            message: 'Введите корректный email'
+                          }
+                        })
+                      }
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
@@ -196,6 +233,7 @@ const SignIn = ({ doAuth } : Props) => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['email']?.message} />
                 </div>
 
                 <div className="mb-6">
@@ -205,7 +243,7 @@ const SignIn = ({ doAuth } : Props) => {
                   <div className="relative">
                     <input
                       type="password"
-                      placeholder=""
+                      { ...register('password') }
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
 

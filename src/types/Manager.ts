@@ -1,10 +1,11 @@
 import { Role } from "../enums/Role"
 
 export type Manager = {
-    fio: string,
-    photo: File,
-    phone: number,
     email: string,
+    password: string,
+    fio?: string,
+    photo?: string,
+    phone?: number,
     bio?: string,
     role?: Role
 }

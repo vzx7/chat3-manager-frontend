@@ -4,10 +4,26 @@ import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
 
 /**
+ * Роут API
+ */
+const API_URL = 'http://localhost:3000';
+/**
  * Класс для взаимодействия с API
  */
 export class APIHelper {
-    readonly API_URL = '';
+    static async login(authData: Manager) {
+        const { data } = await axios.post(
+            API_URL + '/login',
+            authData,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        return data;
+    }
 
     /**
      * Получиь сервис по id
@@ -79,11 +95,12 @@ export class APIHelper {
      */
     static async SetManager(manager: Manager): Promise<boolean> {
         const { data } = await axios.post(
-            API_URL,
+            API_URL + '/users/createUser',
             manager,
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer xxx'
                 }
             });
         console.log(data)
@@ -127,5 +144,3 @@ export class APIHelper {
         return data;
     }
 }
-
-const API_URL = ''
