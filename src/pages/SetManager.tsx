@@ -35,7 +35,8 @@ const SetManager = () => {
     const formData: Manager = {
       fio: data.fullName,
       phone: data.phoneNumber,
-      email: data.emailAddress
+      email: data.emailAddress,
+      password: ''
     };
     const { bio } = data;
 
