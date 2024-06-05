@@ -1,19 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../images/logo/logo-red-inversion.png';
 import { User } from '../../types/User';
-import { useEffect } from 'react';
 import { Role } from '../../enums/Role';
 import { Manager } from '../../types/Manager';
 import { APIHelper } from '../../logic/APIHelper';
 import { useForm } from 'react-hook-form';
 import { FormHelper } from '../../logic/FormHelper';
 import TextFieldError from '../../components/TextFieldError';
+import AdmAva from '../../images/avatars/adm.png';
+import MngAva from '../../images/avatars/mng.png';
 
 type Props = {
   doAuth: (user: User) => void
 };
 
 const SignIn = ({ doAuth } : Props) => {
+
   const navigate = useNavigate();
 
   const {
@@ -36,13 +38,18 @@ const SignIn = ({ doAuth } : Props) => {
     reset();
 
     APIHelper.login(formData).then((result: any) => {
-      console.log(result);
-/*       doAuth({
-        name: 'I',
-        avatar: '',
-        role: Role.admin
-      })
-      navigate('/'); */
+      if (result.is) {
+        const { user, tokens } = result.data;
+        doAuth({
+          id: user.id,
+          avatar: user.role !== Role.admin ? AdmAva : MngAva,
+          fio: user.fio,
+          role: user.role,
+          token: tokens.token.key
+        })
+        
+        navigate('/');
+      }
     }).catch(() => {
 
     });

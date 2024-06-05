@@ -7,6 +7,7 @@ import routes from './routes';
 import Main from './pages/Dashboard/Main';
 import Page404 from './pages/404';
 import { User } from './types/User';
+import useLocalStorage from './hooks/useLocalStorage';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 const AuthContext = createContext<{
@@ -16,7 +17,8 @@ const AuthContext = createContext<{
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  const [currentUser, setCurrentUser] = useLocalStorage<User | null>('user', null);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
