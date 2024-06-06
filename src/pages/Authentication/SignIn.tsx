@@ -9,12 +9,21 @@ import { FormHelper } from '../../logic/FormHelper';
 import TextFieldError from '../../components/TextFieldError';
 import AdmAva from '../../images/avatars/adm.png';
 import MngAva from '../../images/avatars/mng.png';
+import Alerts from '../UiElements/Alerts';
+import { ResponseStatus } from '../../types/ResponseStatus';
+import { useState } from 'react';
 
 type Props = {
   doAuth: (user: User) => void
 };
 
 const SignIn = ({ doAuth } : Props) => {
+
+  const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
+    isResponseResult: false,
+    responseResultMsg: '',
+    responseResultStatus: ''
+  });
 
   const navigate = useNavigate();
 
@@ -40,15 +49,33 @@ const SignIn = ({ doAuth } : Props) => {
     APIHelper.login(formData).then((result: any) => {
       if (result.is) {
         const { user, tokens } = result.data;
+
         doAuth({
           id: user.id,
           avatar: user.role !== Role.admin ? AdmAva : MngAva,
           fio: user.fio,
           role: user.role,
           token: tokens.token.key
+        });
+
+        setAlertProps({
+          responseResultStatus: 'ok',
+          isResponseResult: true,
+          responseResultMsg: `${user.fio}, вы авторизованы, через 5 секунд вы будете перенаправлены на главную страницу!`
         })
-        
-        navigate('/');
+
+        const tId = setTimeout(() => {
+          navigate('/');
+
+          clearTimeout(tId);
+        }, 5000);
+      
+      } else {
+        setAlertProps({
+          responseResultStatus: 'error',
+          isResponseResult: true,
+          responseResultMsg: result.error
+        });
       }
     }).catch(() => {
 
@@ -60,6 +87,7 @@ const SignIn = ({ doAuth } : Props) => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
+           
               <Link className="mb-5.5 inline-block" to="/">
                 <img className="hidden dark:block" src={Logo} alt="Logo" />
                 <img className="dark:hidden" src={Logo} alt="Logo" />
@@ -200,7 +228,7 @@ const SignIn = ({ doAuth } : Props) => {
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Авторизация
               </h2>
-
+              <Alerts active={alertProps.isResponseResult} msg={alertProps.responseResultMsg} type={alertProps.responseResultStatus} />
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">

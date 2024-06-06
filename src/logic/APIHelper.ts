@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, Method } from "axios";
 import { Manager } from "../types/Manager";
 import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
@@ -6,28 +6,42 @@ import { Activate } from "../types/Activate";
 /**
  * Роут API
  */
-const API_URL = 'http://localhost:3000';
-
-const request = async (url: string, method: string, data?: any, headersExt?: Headers) => {
+const API_URL = 'http://localhost:3000/';
+/**
+ * Хелпер для запросов к Api
+ * @param url 
+ * @param method 
+ * @param data 
+ * @param headersExt 
+ * @returns 
+ */
+const request = async (url: string, method: Method, data?: any, headersExt?: Headers) => {
         
     let headers = {
         'Content-Type': 'application/json'
     };
 
-    if (headersExt) {
-        headers = {...headers, ...headersExt};
-    }
     try {
+
+        if (headersExt) {
+            headers = {...headers, ...headersExt};
+        }
+
         const response = await axios({
             url: API_URL + url,
             method,
             data,
             headers
         });
+        
         return response.data;
     } catch (error) {
+        // Если нет авторизации сообщаем об этом.
+        if ((error as AxiosError)?.status === 401) {
+            return { status: 401, ...((error as AxiosError)?.response?.data || {})}
+        }
         
-        console.log(error)
+        return  (error as AxiosError)?.response?.data;
     }    
 }
 /**
@@ -35,8 +49,8 @@ const request = async (url: string, method: string, data?: any, headersExt?: Hea
  */
 export class APIHelper {
     
-    static async login(authData: Manager) {
-        return await request('/login', 'post', authData);
+    static login(authData: Manager) {
+        return request('login', 'post', authData);
     }
 
     /**
@@ -45,8 +59,7 @@ export class APIHelper {
      * @returns 
      */
     static async getService(serviceId: number): Promise<Service> { 
-        const { data } = await axios.get(API_URL + serviceId);
-        return data;
+        return await request(String(serviceId), 'get');
     }
 
     /**
