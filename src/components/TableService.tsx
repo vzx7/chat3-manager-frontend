@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { APIHelper } from "../logic/APIHelper";
 import { User } from "../types/User";
+import { useEffect } from "react";
+import { Service } from "../types/Service";
 type Props = {
   currentUser: User | null
 }
@@ -17,6 +19,12 @@ const TableService = ({ currentUser } : Props) => {
     const is = active === 0 ? true : false;
     APIHelper.setActivateService({ id, is }).then().catch();
   }
+  let services: Service[];
+  useEffect(() => {
+    APIHelper.getServices().then((res) => {
+      services = res;
+    }).catch();
+  },[]);
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">

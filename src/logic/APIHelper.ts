@@ -85,8 +85,7 @@ export class APIHelper {
      * @returns 
      */
     static async getServices(): Promise<Service[]> { 
-        const { data } = await axios.get(API_URL);
-        return data;
+        return request('login', 'get', {}, );
     }
 
     /**
