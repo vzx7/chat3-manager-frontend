@@ -7,22 +7,36 @@ import { Activate } from "../types/Activate";
  * Роут API
  */
 const API_URL = 'http://localhost:3000';
+
+const request = async (url: string, method: string, data?: any, headersExt?: Headers) => {
+        
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (headersExt) {
+        headers = {...headers, ...headersExt};
+    }
+    try {
+        const response = await axios({
+            url: API_URL + url,
+            method,
+            data,
+            headers
+        });
+        return response.data;
+    } catch (error) {
+        
+        console.log(error)
+    }    
+}
 /**
  * Класс для взаимодействия с API
  */
 export class APIHelper {
+    
     static async login(authData: Manager) {
-        const { data } = await axios.post(
-            API_URL + '/login',
-            authData,
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        return data;
+        return await request('/login', 'post', authData);
     }
 
     /**
