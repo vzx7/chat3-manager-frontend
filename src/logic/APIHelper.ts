@@ -2,6 +2,7 @@ import axios, { AxiosError, Method } from "axios";
 import { Manager } from "../types/Manager";
 import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
+import { User } from "../types/User";
 
 /**
  * Роут API
@@ -48,8 +49,13 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
  * Класс для взаимодействия с API
  */
 export class APIHelper {
-    
-    static login(authData: Manager) {
+    #user: User | null;
+
+    constructor(user: User | null) {
+        this.#user = user;
+    }
+   
+    public login(authData: Manager) {
         return request('login', 'post', authData);
     }
 
@@ -58,7 +64,7 @@ export class APIHelper {
      * @param serviceId 
      * @returns 
      */
-    static async getService(serviceId: number): Promise<Service> { 
+    public async getService(serviceId: number): Promise<Service> { 
         return await request(String(serviceId), 'get');
     }
 
@@ -67,7 +73,7 @@ export class APIHelper {
      * @param service 
      * @returns 
      */
-    static async setService(service: Service): Promise<boolean> { 
+    public async setService(service: Service): Promise<boolean> { 
         const { data } = await axios.patch(
             API_URL,
             service,
@@ -84,8 +90,10 @@ export class APIHelper {
      * Получить все сервисы
      * @returns 
      */
-    static async getServices(): Promise<Service[]> { 
-        return request('login', 'get', {}, );
+    async getServices(): Promise<Service[]> { 
+        return request('getServices', 'get', {
+            Authorization: `Bearer ${this.#user?.token}`
+        });
     }
 
     /**
@@ -93,7 +101,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    static async setActivateService(params: Activate): Promise<boolean> { 
+    public async setActivateService(params: Activate): Promise<boolean> { 
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -111,7 +119,7 @@ export class APIHelper {
      * @param managerId 
      * @returns 
      */
-    static async getManager(managerId: number): Promise<Manager> {
+    public async getManager(managerId: number): Promise<Manager> {
         const { data } = await axios.get(API_URL + managerId);
         return data;
     }
@@ -119,7 +127,7 @@ export class APIHelper {
      * Метод добавления менеджера
      * @param manager 
      */
-    static async SetManager(manager: Manager): Promise<boolean> {
+    public async SetManager(manager: Manager): Promise<boolean> {
         const { data } = await axios.post(
             API_URL + '/users/createUser',
             manager,
@@ -137,7 +145,7 @@ export class APIHelper {
      * Получить списко менеджеров
      * @returns 
      */
-    static async getManagers(): Promise<Manager[]> {
+    public async getManagers(): Promise<Manager[]> {
         const { data } = await axios.get(API_URL);
         return data;
     }
@@ -147,7 +155,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    static async setAcivateManager(params: Activate) { 
+    public async setAcivateManager(params: Activate) { 
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -165,7 +173,7 @@ export class APIHelper {
      * @param managerId 
      * @returns 
      */
-    static async removeManager(managerId: number) { 
+    public async removeManager(managerId: number) { 
         const { data } = await axios.delete(API_URL + managerId);
         return data;
     }

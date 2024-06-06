@@ -9,6 +9,7 @@ type Props = {
 const TableService = ({ currentUser } : Props) => {
   //TODO Добавить ограничение прав для менежера - может видеть и настраивать только ненастроееные сервисы, активировать и деактивировать не может
   const navigate = useNavigate();
+  const API = new APIHelper(currentUser);
   const onClick = (ev: any) => {
     const { active, id } = ev.currentTarget.dataset;
     if (+active === 2) {
@@ -17,12 +18,13 @@ const TableService = ({ currentUser } : Props) => {
     }
 
     const is = active === 0 ? true : false;
-    APIHelper.setActivateService({ id, is }).then().catch();
+    API.setActivateService({ id, is }).then().catch();
   }
   let services: Service[];
   useEffect(() => {
-    APIHelper.getServices().then((res) => {
+    API.getServices().then((res) => {
       services = res;
+      console.log(services)
     }).catch();
   },[]);
   return (

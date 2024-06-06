@@ -18,11 +18,19 @@ const AuthContext = createContext<{
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [currentUser, setCurrentUser] = useLocalStorage<User | null>('user', null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [user, saveUser] = useLocalStorage<User | null>('user', null);
 
   useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+    }
     setTimeout(() => setLoading(false), 1000);
   }, []);
+
+  useEffect(() => {
+    saveUser(currentUser);
+  }, [currentUser])
 
   return loading ? (
     <Loader />
