@@ -3,6 +3,7 @@ import { Manager } from "../types/Manager";
 import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
 import { User } from "../types/User";
+import { ResponseData } from "../types/ResponseData";
 
 /**
  * Роут API
@@ -49,10 +50,24 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
  * Класс для взаимодействия с API
  */
 export class APIHelper {
-    #user: User | null;
+    //#user: User | null;
 
     constructor(user: User | null) {
-        this.#user = user;
+        //this.#user = user;
+        axios.interceptors.request.use(
+            (config) => {
+        
+                if (user) {
+                    config.headers['Authorization'] = `Bearer ${user.token}`;
+                }
+        
+                return config;
+            },
+        
+            (error) => {
+                return Promise.reject(error);
+            }
+        );
     }
    
     public login(authData: Manager) {
@@ -90,10 +105,8 @@ export class APIHelper {
      * Получить все сервисы
      * @returns 
      */
-    async getServices(): Promise<Service[]> { 
-        return request('getServices', 'get', {
-            Authorization: `Bearer ${this.#user?.token}`
-        });
+    async getServices(): Promise<ResponseData> { 
+        return request('getServices', 'get');
     }
 
     /**
@@ -130,13 +143,7 @@ export class APIHelper {
     public async SetManager(manager: Manager): Promise<boolean> {
         const { data } = await axios.post(
             API_URL + '/users/createUser',
-            manager,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer xxx'
-                }
-            });
+            manager);
         console.log(data)
         return true;
     }
