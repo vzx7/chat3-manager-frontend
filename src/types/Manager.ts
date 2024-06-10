@@ -1,6 +1,7 @@
 import { Role } from "../enums/Role"
 
 export type Manager = {
+    id?: number,
     email: string,
     password: string,
     fio?: string,

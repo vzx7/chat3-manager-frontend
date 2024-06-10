@@ -9,7 +9,7 @@ export type ResponseData = {
     /**
      * Данные ответа
      */
-    data?: object | Array<any>,
+    data?: any | Array<any>,
     /**
      * Сообщение ошибки
      */

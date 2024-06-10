@@ -6,10 +6,17 @@ import { Manager } from '../types/Manager';
 import { APIHelper } from '../logic/APIHelper';
 import TextFieldError from '../components/TextFieldError';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../logic/context';
 const SetManager = () => {
+  //@ts-ignore
+  const { currentUser, setCurrentUser } = useContext(AuthContext); // Получите доступ к currentUser
   const { id } = useParams();
+  const [manager, setManager] = useState<Manager>({
+    id: 0,
+    email: '',
+    password: ''
+  });
   const {
     register,
     formState: { errors },
@@ -19,12 +26,14 @@ const SetManager = () => {
     mode: 'onBlur'
   });
   
-  let manager: Manager;
+  const API = new APIHelper(currentUser);
 
   useEffect(() => {
     if (id) {
-      APIHelper.getManager(+id).then((managerData) => {
-        manager = managerData;
+      API.getManager(+id).then((response) => {
+        if (response.is) {
+          setManager(() => response.data as Manager);
+        } 
       }).catch();
     }
   }, []);
@@ -33,6 +42,7 @@ const SetManager = () => {
     console.log(data);
 
     const formData: Manager = {
+      id: manager.id,
       fio: data.fullName,
       phone: data.phoneNumber,
       email: data.emailAddress,
@@ -46,7 +56,7 @@ const SetManager = () => {
 
     reset();
 
-    APIHelper.SetManager(formData).then(r => {
+    API.SetManager(formData).then(r => {
       console.log(r);
     }).catch(() => {
 
@@ -109,6 +119,7 @@ const SetManager = () => {
                           {
                             ...register('fullName', {
                               required: 'Поле обязательно к заполнению!',
+                              value: manager.fio,
                               pattern: {
                                 value: FormHelper.REGEXP.FIO,
                                 message: 'Поле должно содержать ФИО - Иван Иванович Иванов (на кириллице)'
@@ -135,6 +146,7 @@ const SetManager = () => {
                         {
                           ...register('phoneNumber', {
                             required: 'Поле обязательно к заполнению!',
+                            value: manager.phone,
                             pattern: {
                               value: FormHelper.REGEXP.phone,
                               message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
@@ -187,6 +199,7 @@ const SetManager = () => {
                         {
                           ...register('emailAddress', {
                             required: 'Поле обязательно к заполнению!',
+                            value: manager.email,
                             pattern: {
                               value: FormHelper.REGEXP.email,
                               message: 'Введите корректный email'
@@ -244,7 +257,8 @@ const SetManager = () => {
                         rows={6}
                         placeholder="Добавить комментарий о менеджере"
                         {...register("bio", {
-                          required: false
+                          required: false,
+                          value: manager.bio
                         })}
                         ></textarea>
                     </div>

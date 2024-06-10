@@ -36,7 +36,7 @@ const SignIn = ({ doAuth } : Props) => {
     mode: 'onBlur'
   });
   
-  const API = new APIHelper(null);
+  const API = new APIHelper(null, doAuth);
   const onSubmit = async (data: any) => {
     console.log(data);
 

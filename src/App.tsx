@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState, createContext } from 'react';
+import { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import SignIn from './pages/Authentication/SignIn';
@@ -8,12 +8,9 @@ import Main from './pages/Dashboard/Main';
 import Page404 from './pages/404';
 import { User } from './types/User';
 import useLocalStorage from './hooks/useLocalStorage';
+import { AuthContext } from './logic/context';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
-const AuthContext = createContext<{
-  currentUser: User | null,
-  setCurrentUser?: (user: User) => void
-} | null>(null);
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
