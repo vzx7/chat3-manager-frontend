@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import noname from '../images/avatars/noname.png';
 import { User } from '../types/User';
 import { Role } from '../enums/Role';
+import { APIHelper } from '../logic/APIHelper';
 
 type Props = {
   currentUser: User | null,
@@ -14,6 +15,10 @@ const DropdownUser = ({ currentUser, logout }: Props) => {
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
+  const onClick = () => {
+    APIHelper.logout();
+    logout();
+  }
 
   // close on click outside
   useEffect(() => {
@@ -53,7 +58,7 @@ const DropdownUser = ({ currentUser, logout }: Props) => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {currentUser?.name}
+            {currentUser?.fio}
           </span>
           <span className="block text-xs">{currentUser?.role === Role.admin ? 'admin' : 'manager'}</span>
         </span>
@@ -88,7 +93,7 @@ const DropdownUser = ({ currentUser, logout }: Props) => {
         className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark ${dropdownOpen === true ? 'block' : 'hidden'
           }`}
       >
-        <button onClick={() => logout()} className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button onClick={() => onClick()} className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
           <svg
             className="fill-current"
             width="22"

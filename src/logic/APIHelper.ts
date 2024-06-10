@@ -12,12 +12,9 @@ import { Role } from "../enums/Role";
  * Роут API
  */
 const API_URL = 'http://localhost:3000/';
-/**
- * Класс для взаимодействия с API
- */
-export class APIHelper {
-    //#user: User | null;
-    #setCurrentUser: Function | undefined;
+
+const user: User = JSON.parse(window.localStorage.getItem('user') || '');
+
     /**
      * Хелпер для запросов к Api
      * @param url 
@@ -26,7 +23,7 @@ export class APIHelper {
      * @param headersExt 
      * @returns 
      */
-    #request = async (url: string, method: Method, data?: any, headersExt?: Headers): Promise<any> => {
+    const request = async (url: string, method: Method, data?: any, headersExt?: Headers): Promise<any> => {
         
         let headers = {
             'Content-Type': 'application/json'
@@ -42,55 +39,57 @@ export class APIHelper {
                 url: API_URL + url,
                 method,
                 data,
-                headers
+                headers,
+                withCredentials: true
             });
             
             return response.data;
         } catch (error) {
             // Если нет авторизации сообщаем об этом.
             if ((error as AxiosError)?.response?.status === 401) {
-                const result  = await this.#request('refreshToken', 'get');
-                const { user, tokens } = result;
+                const { data }  = await request('refreshToken', 'get');
+                const { user, tokens } = data;
                 window.localStorage.setItem('user', JSON.stringify({
                     id: user.id,
                     avatar: user.role !== Role.admin ? AdmAva : MngAva,
                     fio: user.fio,
                     role: user.role,
-                    token: tokens.token.k
+                    token: tokens.token.key
                 })); 
-                //return this.#request(url, method);
-                //return { status: 401, ...((error as AxiosError)?.response?.data || {})}
+                return request(url, method);
             }
             
             return  (error as AxiosError)?.response?.data;
         }    
     }
+axios.interceptors.request.use(
+    (config) => {
+        if (user) {
+            config.headers['Authorization'] = `Bearer ${user?.token}`;
+        }
 
-    constructor(user: User | null, setCurrentUser?: Function) {
-        //this.#user = user;
-        this.#setCurrentUser = setCurrentUser;
-        axios.interceptors.request.use(
-            (config) => {
-        
-                if (user) {
-                    config.headers['Authorization'] = `Bearer ${user.token}`;
-                }
-        
-                return config;
-            },
-        
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
+        return config;
+    },
+
+    (error) => {
+        return Promise.reject(error);
     }
+);
+/**
+ * Класс для взаимодействия с API
+ */
+export class APIHelper {
 
-    public refreshToken() {
-        return this.#request('refreshToken', 'get');
+    public static refreshToken() {
+        return request('refreshToken', 'get');
     }
    
-    public login(authData: Manager) {
-        return this.#request('login', 'post', authData);
+    public static login(authData: Manager) {
+        return request('login', 'post', authData);
+    }
+
+    public static logout() {
+        return request('logout', 'get');
     }
 
     /**
@@ -98,8 +97,8 @@ export class APIHelper {
      * @param serviceId 
      * @returns 
      */
-    public async getService(serviceId: number): Promise<Service> { 
-        return await this.#request(String(serviceId), 'get');
+    public static async getService(serviceId: number): Promise<Service> { 
+        return await request(String(serviceId), 'get');
     }
 
     /**
@@ -107,7 +106,7 @@ export class APIHelper {
      * @param service 
      * @returns 
      */
-    public async setService(service: Service): Promise<boolean> { 
+    public static async setService(service: Service): Promise<boolean> { 
         const { data } = await axios.patch(
             API_URL,
             service,
@@ -124,8 +123,8 @@ export class APIHelper {
      * Получить все сервисы
      * @returns 
      */
-    async getServices(): Promise<ResponseData> { 
-        return this.#request('getServices', 'get');
+    public static getServices(): Promise<ResponseData> { 
+        return request('getServices', 'get');
     }
 
     /**
@@ -133,7 +132,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public async setActivateService(params: Activate): Promise<boolean> { 
+    public static async setActivateService(params: Activate): Promise<boolean> { 
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -151,22 +150,22 @@ export class APIHelper {
      * @param managerId 
      * @returns 
      */
-    public async getManager(managerId: number): Promise<ResponseData> {
-        return this.#request('users/' + managerId, 'get');
+    public static async getManager(managerId: number): Promise<ResponseData> {
+        return request('users/' + managerId, 'get');
     }
     /**
      * Метод добавления менеджера
      * @param manager 
      */
-    public async SetManager(manager: Manager): Promise<boolean> {
-        return this.#request('users/' + manager.id, 'put');
+    public static async SetManager(manager: Manager): Promise<boolean> {
+        return request('users/' + manager.id, 'put');
     }
 
     /**
      * Получить списко менеджеров
      * @returns 
      */
-    public async getManagers(): Promise<Manager[]> {
+    public static async getManagers(): Promise<Manager[]> {
         const { data } = await axios.get(API_URL);
         return data;
     }
@@ -176,7 +175,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public async setAcivateManager(params: Activate) { 
+    public static async setAcivateManager(params: Activate) { 
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -194,7 +193,7 @@ export class APIHelper {
      * @param managerId 
      * @returns 
      */
-    public async removeManager(managerId: number) { 
+    public static async removeManager(managerId: number) { 
         const { data } = await axios.delete(API_URL + managerId);
         return data;
     }

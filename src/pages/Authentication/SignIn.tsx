@@ -36,7 +36,6 @@ const SignIn = ({ doAuth } : Props) => {
     mode: 'onBlur'
   });
   
-  const API = new APIHelper(null, doAuth);
   const onSubmit = async (data: any) => {
     console.log(data);
 
@@ -47,7 +46,7 @@ const SignIn = ({ doAuth } : Props) => {
 
     reset();
 
-    API.login(formData).then((result: any) => {
+    APIHelper.login(formData).then((result: any) => {
       if (result.is) {
         const { user, tokens } = result.data;
 

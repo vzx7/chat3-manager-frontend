@@ -26,11 +26,10 @@ const SetManager = () => {
     mode: 'onBlur'
   });
   
-  const API = new APIHelper(currentUser);
 
   useEffect(() => {
     if (id) {
-      API.getManager(+id).then((response) => {
+      APIHelper.getManager(+id).then((response) => {
         if (response.is) {
           setManager(() => response.data as Manager);
         } 
@@ -56,7 +55,7 @@ const SetManager = () => {
 
     reset();
 
-    API.SetManager(formData).then(r => {
+    APIHelper.SetManager(formData).then(r => {
       console.log(r);
     }).catch(() => {
 
