@@ -5,7 +5,7 @@ import { Activate } from "../types/Activate";
 import { User } from "../types/User";
 import { ResponseData } from "../types/ResponseData";
 // сохраняем юзера в переменную
-let user: User = JSON.parse(window.localStorage.getItem('user') || '');
+let user: User = JSON.parse(localStorage.getItem('user') || '');
 // Настраиваем интерсептор для авторизации
 axios.interceptors.request.use(
     (config) => {
@@ -60,14 +60,15 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
         if ((error as AxiosError)?.response?.status === 401) {
             if (isRepeatedRequest) {
                 // в случае исключения обновления рефреш токена жесткий редирект на страницу авторизации
-                location.origin + '/auth/signin';
+                localStorage.setItem('user', '');
+                location.replace(location.origin + '/auth/signin');
                 return;
             }
 
-            const { data } = await request('refreshToken', 'get');
+            const { data } = await request('refreshToken', 'get', {}, undefined, true);
             const { token } = data;
             user = {...user, token };
-            window.localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user));
             return request(url, method, data, headersExt, true);
         }
 
