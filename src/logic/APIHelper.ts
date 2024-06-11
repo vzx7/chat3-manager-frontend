@@ -4,11 +4,11 @@ import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
 import { User } from "../types/User";
 import { ResponseData } from "../types/ResponseData";
-// сохраняем юзера в переменную
-let user: User = JSON.parse(localStorage.getItem('user') || '');
+
 // Настраиваем интерсептор для авторизации
 axios.interceptors.request.use(
     (config) => {
+        const user = getUser();
         if (user) {
             config.headers['Authorization'] = `Bearer ${user?.token}`;
         }
@@ -20,6 +20,17 @@ axios.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+const getUser = () => {
+    let user: User | null;
+
+    try {
+        user = JSON.parse(localStorage.getItem('user') || '');
+    } catch (error) {
+        user = null;
+    }
+    return user;
+}
 
 /**
  * Роут API
@@ -67,8 +78,8 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
 
             const { data } = await request('refreshToken', 'get', {}, undefined, true);
             const { token } = data;
-            user = {...user, token };
-            localStorage.setItem('user', JSON.stringify(user));
+            const user = getUser();
+            localStorage.setItem('user', JSON.stringify({ ...user, token }));
             return request(url, method, data, headersExt, true);
         }
 
@@ -91,6 +102,15 @@ export class APIHelper {
 
     public static logout() {
         return request('logout', 'get');
+    }
+
+    /**
+     * Создать сервис
+     * @param serviceId 
+     * @returns 
+     */
+    public static createService(formData: object): Promise<Service> {
+        return request('createService', 'post', formData);
     }
 
     /**
