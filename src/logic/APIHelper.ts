@@ -4,64 +4,9 @@ import { Service } from "../types/Service";
 import { Activate } from "../types/Activate";
 import { User } from "../types/User";
 import { ResponseData } from "../types/ResponseData";
-import AdmAva from '../images/avatars/adm.png';
-import MngAva from '../images/avatars/mng.png';
-import { Role } from "../enums/Role";
-
-/**
- * Роут API
- */
-const API_URL = 'http://localhost:3000/';
-
-const user: User = JSON.parse(window.localStorage.getItem('user') || '');
-
-    /**
-     * Хелпер для запросов к Api
-     * @param url 
-     * @param method 
-     * @param data 
-     * @param headersExt 
-     * @returns 
-     */
-    const request = async (url: string, method: Method, data?: any, headersExt?: Headers): Promise<any> => {
-        
-        let headers = {
-            'Content-Type': 'application/json'
-        };
-
-        try {
-
-            if (headersExt) {
-                headers = {...headers, ...headersExt};
-            }
-
-            const response = await axios({
-                url: API_URL + url,
-                method,
-                data,
-                headers,
-                withCredentials: true
-            });
-            
-            return response.data;
-        } catch (error) {
-            // Если нет авторизации сообщаем об этом.
-            if ((error as AxiosError)?.response?.status === 401) {
-                const { data }  = await request('refreshToken', 'get');
-                const { user, tokens } = data;
-                window.localStorage.setItem('user', JSON.stringify({
-                    id: user.id,
-                    avatar: user.role !== Role.admin ? AdmAva : MngAva,
-                    fio: user.fio,
-                    role: user.role,
-                    token: tokens.token.key
-                })); 
-                return request(url, method);
-            }
-            
-            return  (error as AxiosError)?.response?.data;
-        }    
-    }
+// сохраняем юзера в переменную
+let user: User = JSON.parse(window.localStorage.getItem('user') || '');
+// Настраиваем интерсептор для авторизации
 axios.interceptors.request.use(
     (config) => {
         if (user) {
@@ -75,6 +20,61 @@ axios.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+/**
+ * Роут API
+ */
+const API_URL = 'http://localhost:3000/';
+
+/**
+ * Хелпер для запросов к Api
+ * @param url 
+ * @param method 
+ * @param data 
+ * @param headersExt 
+ * @returns 
+ */
+const request = async (url: string, method: Method, data?: any, headersExt?: Headers, isRepeatedRequest?: boolean): Promise<any> => {
+
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    try {
+
+        if (headersExt) {
+            headers = { ...headers, ...headersExt };
+        }
+
+        const response = await axios({
+            url: API_URL + url,
+            method,
+            data,
+            headers,
+            withCredentials: true
+        });
+
+        return response.data;
+    } catch (error) {
+        // Если вернулась ошибка авторизации, пробуем обновить токен
+        if ((error as AxiosError)?.response?.status === 401) {
+            if (isRepeatedRequest) {
+                // в случае исключения обновления рефреш токена жесткий редирект на страницу авторизации
+                location.origin + '/auth/signin';
+                return;
+            }
+
+            const { data } = await request('refreshToken', 'get');
+            const { token } = data;
+            user = {...user, token };
+            window.localStorage.setItem('user', JSON.stringify(user));
+            return request(url, method, data, headersExt, true);
+        }
+
+        return (error as AxiosError)?.response?.data;
+    }
+};
+
 /**
  * Класс для взаимодействия с API
  */
@@ -83,7 +83,7 @@ export class APIHelper {
     public static refreshToken() {
         return request('refreshToken', 'get');
     }
-   
+
     public static login(authData: Manager) {
         return request('login', 'post', authData);
     }
@@ -97,7 +97,7 @@ export class APIHelper {
      * @param serviceId 
      * @returns 
      */
-    public static async getService(serviceId: number): Promise<Service> { 
+    public static async getService(serviceId: number): Promise<Service> {
         return await request(String(serviceId), 'get');
     }
 
@@ -106,7 +106,7 @@ export class APIHelper {
      * @param service 
      * @returns 
      */
-    public static async setService(service: Service): Promise<boolean> { 
+    public static async setService(service: Service): Promise<boolean> {
         const { data } = await axios.patch(
             API_URL,
             service,
@@ -123,7 +123,7 @@ export class APIHelper {
      * Получить все сервисы
      * @returns 
      */
-    public static getServices(): Promise<ResponseData> { 
+    public static getServices(): Promise<ResponseData> {
         return request('getServices', 'get');
     }
 
@@ -132,7 +132,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public static async setActivateService(params: Activate): Promise<boolean> { 
+    public static async setActivateService(params: Activate): Promise<boolean> {
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -175,7 +175,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public static async setAcivateManager(params: Activate) { 
+    public static async setAcivateManager(params: Activate) {
         const { data } = await axios.patch(
             API_URL,
             params,
@@ -193,7 +193,7 @@ export class APIHelper {
      * @param managerId 
      * @returns 
      */
-    public static async removeManager(managerId: number) { 
+    public static async removeManager(managerId: number) {
         const { data } = await axios.delete(API_URL + managerId);
         return data;
     }
