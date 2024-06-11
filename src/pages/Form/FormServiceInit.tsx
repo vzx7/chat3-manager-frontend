@@ -1,8 +1,14 @@
 import Breadcrumb from '../../components/Breadcrumb';
 import CheckboxTwo from '../../components/CheckboxTwo';
 import { useForm } from "react-hook-form";
+import { APIHelper } from '../../logic/APIHelper';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../logic/context';
 
 const FormServiceInit = () => {
+  //@ts-ignore
+  const { currentUser, setCurrentUser } = useContext(AuthContext); 
+  const [isSSL, setSSL] = useState(false)
   const {
     register,
     formState: { errors },
@@ -13,18 +19,17 @@ const FormServiceInit = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-    const formData = new FormData();
-    formData.append("isSSL", data.isSSL);
-    formData.append("domain", data.domain);
 
-    reset();
-
-    const requestOptions = {
-      method: "POST",
-      // headers: { 'Content-Type': 'application/json' },
-      body: formData
+    const formData = {
+      isSSL,
+      domain: data.domain,
+      userId: currentUser.id
     };
+
+    APIHelper.createService(formData).then(res => {
+      console.log(res)
+      reset();
+    }).catch()
     return;
 
   }
@@ -76,7 +81,7 @@ const FormServiceInit = () => {
                   <label className="mb-2.5 block text-black dark:text-white">
                     Enable SSL <span className="text-meta-1">*</span>
                   </label>
-                  <CheckboxTwo text="Использовать SSL для этого домена" idRequired={true} name="isSSL" />
+                  <CheckboxTwo text="Использовать SSL для этого домена" idRequired={true} name="isSSL" doCheck={setSSL} />
                 </div>
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
+import { Suspense, lazy, useEffect, useState} from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import SignIn from './pages/Authentication/SignIn';
@@ -46,7 +46,7 @@ function App() {
           <Route path="/auth/signin" element={<SignIn doAuth={((user) => setCurrentUser(user))} />} />
           <Route path="/" element={<DefaultLayout currentUser={currentUser} logout={() => setCurrentUser(null)} />}>
             {currentUser ? <>
-              <Route index element={<Main currentUser={currentUser} />} />
+              <Route index element={<Main />} />
               {routes.map((routes, index) => {
                 const { path, component: Component } = routes;
                 return (

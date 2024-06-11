@@ -10,7 +10,8 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../logic/context';
 const SetManager = () => {
   //@ts-ignore
-  const { currentUser, setCurrentUser } = useContext(AuthContext); // Получите доступ к currentUser
+  const { currentUser, setCurrentUser } = useContext(AuthContext); 
+  
   const { id } = useParams();
   const [manager, setManager] = useState<Manager>({
     id: 0,

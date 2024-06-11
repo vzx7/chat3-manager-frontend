@@ -1,14 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { APIHelper } from "../logic/APIHelper";
-import { User } from "../types/User";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ResponseData } from "../types/ResponseData";
 import { Domain } from "../types/Domain";
 import { Role } from "../enums/Role";
-type Props = {
-  currentUser: User | null
-}
-const TableService = ({ currentUser }: Props) => {
+import { AuthContext } from "../logic/context";
+
+const TableService = () => {
+  //@ts-ignore
+  const { currentUser } = useContext(AuthContext); 
+
+  const [domains, setDomains] = useState([])
   //TODO Добавить ограничение прав для менежера - может видеть и настраивать только ненастроееные сервисы, активировать и деактивировать не может
   const navigate = useNavigate();
 
@@ -22,11 +24,11 @@ const TableService = ({ currentUser }: Props) => {
     const is = active === 0 ? true : false;
     APIHelper.setActivateService({ id, is }).then().catch();
   }
-  let domains: Domain[] = [];
+
   useEffect(() => {
     APIHelper.getServices().then((res: ResponseData) => {
       if (res.is) {
-        domains = (res.data || []) as Domain[];
+        setDomains(res.data || []);
       }
     }).catch();
   }, []);
