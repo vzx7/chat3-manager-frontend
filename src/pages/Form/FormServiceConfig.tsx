@@ -23,9 +23,8 @@ const FormServiceConfig = () => {
 
   useEffect(() => {
     APIHelper.getService(Number(params.id)).then(res => {
-      if (res) {
-        setService(res);
-        console.log(service);
+      if (res.is) {
+        setService(res.data);
       }
     }).catch()
   }, []);
@@ -71,7 +70,7 @@ const FormServiceConfig = () => {
   const setURL = (is: boolean) => setRedirect(is);
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    console.log(data, isRedirect, service);
 
     const file = data.c_photo[0];
     const error = FormHelper.validateImg(file);
@@ -88,7 +87,7 @@ const FormServiceConfig = () => {
     const formData: Service = {
       name: data.name,
       type: data.type,
-      domain: data.domain,
+      domain: service?.domain || '',
       title: data.title,
       brand: data.brand,
       model: data.model,
@@ -113,13 +112,16 @@ const FormServiceConfig = () => {
       formData.url = data.url
     }
 
-    APIHelper.setService(formData).then().catch();
+    APIHelper.setService(formData).then(res => {
+      if (res.is) {
+
+      }
+    }).catch();
 
     reset();
-
+    setPersonalPoiiceValue('');
+    setRedirect(false);
   }
-
-
 
   return (
     <>
@@ -137,44 +139,20 @@ const FormServiceConfig = () => {
                     Данные сервиса
                   </h3>
                 </div>
-                <div className="mb-4.5 mt-2">
+                <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Domain <span className="text-meta-1">*</span>
+                    Domain
                   </label>
-                  <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select
-                      {
-                      ...register('domain', {
-                        required: 'Домен должен быть выбран!',
-                      })
-                      }
-                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-
-                      <option value="0">Выберите домен сервиса </option>
-                      <option value="14">kia-the-best</option>
-                      <option value="17">bmw-cool</option>
-                    </select>
-                    <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                      <svg
-                        className="fill-current"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g opacity="0.8">
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                            fill=""
-                          ></path>
-                        </g>
-                      </svg>
-                    </span>
-                  </div>
-                  <TextFieldError errors={errors} error={errors['domain']?.message} />
+                  <input
+                    {
+                    ...register('domain', { 
+                      disabled: true
+                    })
+                    }
+                    value={service?.domain}
+                    type="text"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
@@ -228,13 +206,13 @@ const FormServiceConfig = () => {
                       }
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                       <option value="0">Выберите бренд</option>
-                      <option value="">BMW</option>
-                      <option value="">Chevrolet</option>
-                      <option value="">Ford</option>
-                      <option value="">Hyundai</option>
-                      <option value="">KIA</option>
-                      <option value="">Mazda</option>
-                      <option value="">Mercedes</option>
+                      <option value="1">BMW</option>
+                      <option value="2">Chevrolet</option>
+                      <option value="3">Ford</option>
+                      <option value="4">Hyundai</option>
+                      <option value="5">KIA</option>
+                      <option value="6">Mazda</option>
+                      <option value="7">Mercedes</option>
                     </select>
                     <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                       <svg
@@ -478,8 +456,8 @@ const FormServiceConfig = () => {
                       }
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                       <option value="">Выбирете таймзону</option>
-                      <option value="">Europa/Moscow</option>
-                      <option value="">Europa/Berlin</option>
+                      <option value="1">Europa/Moscow</option>
+                      <option value="2">Europa/Berlin</option>
                     </select>
                     <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                       <svg
@@ -501,7 +479,7 @@ const FormServiceConfig = () => {
                       </svg>
                     </span>
                   </div>
-                  <TextFieldError errors={errors} error={errors['timezone']?.message} />
+                  <TextFieldError errors={errors} error={errors['ac_timezone']?.message} />
                 </div>
                 <div className=" border-stroke py-4 dark:border-strokedark border-t-2 border-b-2 mt-7">
                   <h3 className="text-black dark:text-white font-bold text-lg">

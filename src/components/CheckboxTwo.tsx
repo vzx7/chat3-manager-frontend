@@ -2,11 +2,12 @@ import { useState } from 'react';
 type Props = {
   text?: string,
   name: string,
+  is?: boolean,
   idRequired: boolean,
   doCheck: Function
 }
-const CheckboxTwo = ({ text, idRequired, name, doCheck }: Props) => {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+const CheckboxTwo = ({ text, idRequired, name, doCheck, is }: Props) => {
+  const [isChecked, setIsChecked] = useState<boolean>(!!is);
 
   return (
     <div>

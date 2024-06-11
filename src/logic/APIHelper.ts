@@ -76,8 +76,8 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
                 return;
             }
 
-            const { data } = await request('refreshToken', 'get', {}, undefined, true);
-            const { token } = data;
+            const { data: respData } = await request('refreshToken', 'get', {}, undefined, true);
+            const { token } = respData;
             const user = getUser();
             localStorage.setItem('user', JSON.stringify({ ...user, token }));
             return request(url, method, data, headersExt, true);
@@ -109,7 +109,7 @@ export class APIHelper {
      * @param serviceId 
      * @returns 
      */
-    public static createService(formData: object): Promise<Service> {
+    public static createService(formData: object): Promise<ResponseData> {
         return request('createService', 'post', formData);
     }
 
@@ -118,7 +118,7 @@ export class APIHelper {
      * @param serviceId 
      * @returns 
      */
-    public static async getService(serviceId: number): Promise<Service> {
+    public static async getService(serviceId: number): Promise<ResponseData> {
         return request(`getService/${serviceId}`, 'get');
     }
 
@@ -127,17 +127,8 @@ export class APIHelper {
      * @param service 
      * @returns 
      */
-    public static async setService(service: Service): Promise<boolean> {
-        const { data } = await axios.patch(
-            API_URL,
-            service,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-        console.log(data)
-        return true;
+    public static async setService(service: Service): Promise<ResponseData> {
+        return request('createService', 'post', service);
     }
 
     /**

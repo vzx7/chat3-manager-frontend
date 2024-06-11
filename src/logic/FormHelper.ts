@@ -14,7 +14,7 @@ export class FormHelper {
         phone: new RegExp('^[0-9]{10}$'),
         password: new RegExp('^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$')
     }
-
+ 
     public static validateImg(file: File): ErrorValidateType {
         const accessImgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
         const error = {
