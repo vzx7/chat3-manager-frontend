@@ -1,6 +1,6 @@
 import Breadcrumb from '../../components/Breadcrumb';
 import SwitcherTwo from '../../components/SwitcherTwo';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
 import { FormHelper } from '../../logic/FormHelper';
@@ -9,6 +9,7 @@ import { Service } from '../../types/Service';
 import { APIHelper } from '../../logic/APIHelper';
 import 'react-quill/dist/quill.snow.css';
 import './FormServiceConfig.css'
+import { useParams } from 'react-router-dom';
 
 /**
  * Настройка сервиса
@@ -17,6 +18,19 @@ import './FormServiceConfig.css'
 const FormServiceConfig = () => {
   const [personalPoliceValue, setPersonalPoiiceValue] = useState('');
   const [isRedirect, setRedirect] = useState(true);
+  const [service, setService] = useState<Service>();
+  const params = useParams();
+
+  useEffect(() => {
+    APIHelper.getService(Number(params.id)).then(res => {
+      if (res) {
+        setService(res);
+        console.log(service);
+      }
+    }).catch()
+  }, []);
+
+
   const {
     register,
     setError,
@@ -27,27 +41,29 @@ const FormServiceConfig = () => {
     mode: 'onBlur'
   });
 
-  const editorModules =  {
+  const editorModules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
       ['blockquote', 'code-block'],
       ['link', 'image', 'video', 'formula'],
-    
+
       [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
       [{ 'direction': 'rtl' }],                         // text direction
-    
+
       [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    
+
       [{ 'color': ['black'] }, { 'background': [] }],          // dropdown with defaults from theme
-      [{ 'font': [
-        { 'color': 'White' }
-      ] }],
+      [{
+        'font': [
+          { 'color': 'White' }
+        ]
+      }],
       [{ 'align': [] }],
-    
+
       ['clean']                                         // remove formatting button
     ]
   };
@@ -93,12 +109,12 @@ const FormServiceConfig = () => {
       }
     }
 
-    if(data.url) {
+    if (data.url) {
       formData.url = data.url
     }
 
     APIHelper.setService(formData).then().catch();
-    
+
     reset();
 
   }
@@ -337,7 +353,7 @@ const FormServiceConfig = () => {
                     value={personalPoliceValue}
                     onChange={setPersonalPoiiceValue}
                     modules={editorModules}
-                    
+
                   />
                   <TextFieldError errors={errors} error={errors['s_personal-police']?.message} />
                 </div>

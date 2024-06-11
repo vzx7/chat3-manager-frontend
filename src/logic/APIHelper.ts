@@ -119,7 +119,7 @@ export class APIHelper {
      * @returns 
      */
     public static async getService(serviceId: number): Promise<Service> {
-        return await request(String(serviceId), 'get');
+        return request(`getService/${serviceId}`, 'get');
     }
 
     /**
