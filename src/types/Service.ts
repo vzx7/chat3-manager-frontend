@@ -1,13 +1,14 @@
 export type Service = {
+    id?: number,
     name?: string,
     title?: string,
     domain: string,
     /**
      * Тип сервиса
      */
-    type?: string,
-    brand?: string,
-    model?: string,
+    type?: number,
+    brand?: number,
+    model?: number,
     description?: string,
     personalPolice?: string,
     url?: string,

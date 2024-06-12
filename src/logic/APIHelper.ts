@@ -83,7 +83,10 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
             return request(url, method, data, headersExt, true);
         }
 
-        return (error as AxiosError)?.response?.data;
+        const errorResponse  = (error as AxiosError)?.response?.data;
+        if (errorResponse) return errorResponse;
+
+        throw new Error((error  as Error).message || 'Неидентифицированное исключение');       
     }
 };
 
@@ -91,15 +94,27 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
  * Класс для взаимодействия с API
  */
 export class APIHelper {
-
+    /**
+     * Обновить токен jwt
+     * @returns 
+     */
     public static refreshToken() {
         return request('refreshToken', 'get');
     }
 
+    /**
+     * Авторизоваться
+     * @param authData 
+     * @returns 
+     */
     public static login(authData: Manager) {
         return request('login', 'post', authData);
     }
 
+    /**
+     * Выйти из сервиса
+     * @returns 
+     */
     public static logout() {
         return request('logout', 'get');
     }
@@ -128,7 +143,7 @@ export class APIHelper {
      * @returns 
      */
     public static async setService(service: Service): Promise<ResponseData> {
-        return request('createService', 'post', service);
+        return request('updateService', 'put', service);
     }
 
     /**

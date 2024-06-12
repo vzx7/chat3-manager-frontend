@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../../logic/context';
 import Alerts from '../UiElements/Alerts';
 import { ResponseStatus } from '../../types/ResponseStatus';
+import TextFieldError from '../../components/TextFieldError';
 
 const FormServiceInit = () => {
   const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
@@ -52,18 +53,17 @@ const FormServiceInit = () => {
           responseResultMsg: res.error as string
         });
       }
-    }).catch()
+    }).catch(err => {
+      setAlertProps({
+        responseResultStatus: 'error',
+        isResponseResult: true,
+        responseResultMsg: err.message as string
+      });
+    })
     return;
 
   }
-  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
-    console.log(errors)
-    return error ? (
-      <p className="text-danger mt-2 text-sm" >
-        {error}
-      </p>
-    ) : null;
-  }
+
   return (
     <>
       <Breadcrumb pageName="Создание сервиса" />

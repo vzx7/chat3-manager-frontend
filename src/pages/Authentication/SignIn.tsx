@@ -37,7 +37,6 @@ const SignIn = ({ doAuth } : Props) => {
   });
   
   const onSubmit = async (data: any) => {
-    console.log(data);
 
     const formData: Manager = {
       password: data.password,
@@ -52,7 +51,7 @@ const SignIn = ({ doAuth } : Props) => {
 
         doAuth({
           id: user.id,
-          avatar: user.role !== Role.admin ? AdmAva : MngAva,
+          avatar: user.role === Role.admin ? AdmAva : MngAva,
           fio: user.fio,
           role: user.role,
           token: tokens.token.key
