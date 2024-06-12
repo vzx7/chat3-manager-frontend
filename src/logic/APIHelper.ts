@@ -159,17 +159,8 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public static async setActivateService(params: Activate): Promise<boolean> {
-        const { data } = await axios.patch(
-            API_URL,
-            params,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-        console.log(data)
-        return true;
+    public static async setActivateService(params: Activate): Promise<ResponseData> {
+        return request('configureServiceActivity', 'put', params);
     }
 
     /**

@@ -59,7 +59,7 @@ const FormServiceInit = () => {
         isResponseResult: true,
         responseResultMsg: err.message as string
       });
-    })
+    });
     return;
 
   }

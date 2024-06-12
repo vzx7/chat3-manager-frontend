@@ -76,9 +76,13 @@ const SignIn = ({ doAuth } : Props) => {
           responseResultMsg: result.error
         });
       }
-    }).catch(() => {
-
-    });
+    }).catch(err => {
+      setAlertProps({
+        responseResultStatus: 'error',
+        isResponseResult: true,
+        responseResultMsg: err.message as string
+      });
+    })
   }
   return (
     <>
