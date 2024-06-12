@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wcj/generate-password": "^1.0.4",
     "apexcharts": "^3.41.0",
     "axios": "^1.6.8",
     "headlessui": "^0.0.0",

@@ -8,7 +8,19 @@ import TextFieldError from '../components/TextFieldError';
 import { useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../logic/context';
+import { ResponseStatus } from '../types/ResponseStatus';
+import Alerts from './UiElements/Alerts';
+import PasswordGenerator from '../components/PasswordGenerator';
+
+
 const SetManager = () => {
+  const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
+    isResponseResult: false,
+    responseResultMsg: '',
+    responseResultStatus: ''
+  }); 
+
+  const [password, setPassword] = useState('');
   //@ts-ignore
   const { currentUser, setCurrentUser } = useContext(AuthContext); 
   
@@ -33,6 +45,7 @@ const SetManager = () => {
       APIHelper.getManager(+id).then((response) => {
         if (response.is) {
           setManager(() => response.data as Manager);
+
         } 
       }).catch();
     }
@@ -44,9 +57,9 @@ const SetManager = () => {
     const formData: Manager = {
       id: manager.id,
       fio: data.fullName,
-      phone: data.phoneNumber,
+      phone: Number(data.phoneNumber),
       email: data.emailAddress,
-      password: ''
+      password
     };
     const { bio } = data;
 
@@ -54,13 +67,30 @@ const SetManager = () => {
       formData.bio = bio
     }
 
-    reset();
-
-    APIHelper.SetManager(formData).then(r => {
-      console.log(r);
-    }).catch(() => {
-
-    });
+    APIHelper.CreateManager(formData).then(res => {
+      if (res.is) {
+        reset();
+        setAlertProps({
+          responseResultStatus: 'ok',
+          isResponseResult: true,
+          responseResultMsg: `Менеджер ${formData.fio} успешно создан...
+          Не забудьте сохранить учетный данные для входа: login: ${formData.email}, password: ${formData.password}
+          `
+        })
+      } else {
+        setAlertProps({
+          responseResultStatus: 'error',
+          isResponseResult: true,
+          responseResultMsg: res.error as string
+        });
+      }
+    }).catch(err => {
+      setAlertProps({
+        responseResultStatus: 'error',
+        isResponseResult: true,
+        responseResultMsg: err.message as string
+      });
+    })
   }
 
   return (
@@ -76,6 +106,8 @@ const SetManager = () => {
                   Персональная информация
                 </h3>
               </div>
+              <Alerts active={alertProps.isResponseResult} msg={alertProps.responseResultMsg} type={alertProps.responseResultStatus} />
+              <PasswordGenerator cl={setPassword}/>
               <div className="p-7">
                 <form  onSubmit={handleSubmit(onSubmit)} action="#">
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">

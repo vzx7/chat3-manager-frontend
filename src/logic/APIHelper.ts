@@ -175,8 +175,8 @@ export class APIHelper {
      * Метод добавления менеджера
      * @param manager 
      */
-    public static async SetManager(manager: Manager): Promise<boolean> {
-        return request('users/' + manager.id, 'put');
+    public static async CreateManager(manager: Manager): Promise<ResponseData> {
+        return request('users/createUser', 'post', manager);
     }
 
     /**
