@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { generate } from '@wcj/generate-password';
 
 const PasswordGenerator = ({ cl }: { cl: Function }) => {
@@ -6,15 +6,18 @@ const PasswordGenerator = ({ cl }: { cl: Function }) => {
   const [upperCase, setUpperCase] = useState(true);
   const [numeric, setNumeric] = useState(true);
   const [special, setSpecial] = useState(true);
-  const [length, setLength] = useState(8);
+  const [length, setLength] = useState(9);
   const opts = { lowerCase, upperCase, numeric, special, length };
   const [password, setPassword] = useState(generate(opts));
 
   const generateNewPassword = () => {
     const password = generate(opts);
     setPassword(password);
-    cl(password);
   };
+
+  useEffect(() => {
+    cl(password);
+  },[password]);
 
   return (
     <div className="p-7">
@@ -23,7 +26,7 @@ const PasswordGenerator = ({ cl }: { cl: Function }) => {
       <button className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1 mb-8" onClick={generateNewPassword}>Generate Password</button>
       <div>
         <label>
-          <input type="range" min="8" max="50" value={length} onChange={(evn) => setLength(Number(evn.target.value))} />{' '}
+          <input type="range" min="9" max="50" value={length} onChange={(evn) => setLength(Number(evn.target.value))} />{' '}
           {length} length of password.
         </label>
         <br />

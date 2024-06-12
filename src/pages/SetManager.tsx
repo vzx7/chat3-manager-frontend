@@ -11,6 +11,7 @@ import { AuthContext } from '../logic/context';
 import { ResponseStatus } from '../types/ResponseStatus';
 import Alerts from './UiElements/Alerts';
 import PasswordGenerator from '../components/PasswordGenerator';
+import SwitcherTwo from '../components/SwitcherTwo';
 
 
 const SetManager = () => {
@@ -21,15 +22,12 @@ const SetManager = () => {
   }); 
 
   const [password, setPassword] = useState('');
+  const [isPasswordUpdate, setPasswordUpdate] = useState(false);
   //@ts-ignore
   const { currentUser, setCurrentUser } = useContext(AuthContext); 
   
   const { id } = useParams();
-  const [manager, setManager] = useState<Manager>({
-    id: 0,
-    email: '',
-    password: ''
-  });
+  const [manager, setManager] = useState<Manager>();
   const {
     register,
     formState: { errors },
@@ -39,13 +37,14 @@ const SetManager = () => {
     mode: 'onBlur'
   });
   
+  const setEnablePassword = (is: boolean) => setPasswordUpdate(is);
 
   useEffect(() => {
     if (id) {
       APIHelper.getManager(+id).then((response) => {
         if (response.is) {
-          setManager(() => response.data as Manager);
-
+          setManager(response.data as Manager);
+          reset();
         } 
       }).catch();
     }
@@ -55,42 +54,72 @@ const SetManager = () => {
     console.log(data);
 
     const formData: Manager = {
-      id: manager.id,
+      id: manager?.id,
       fio: data.fullName,
       phone: Number(data.phoneNumber),
       email: data.emailAddress,
       password
     };
+
     const { bio } = data;
 
     if (bio) {
       formData.bio = bio
     }
 
-    APIHelper.CreateManager(formData).then(res => {
-      if (res.is) {
-        reset();
-        setAlertProps({
-          responseResultStatus: 'ok',
-          isResponseResult: true,
-          responseResultMsg: `Менеджер ${formData.fio} успешно создан...
-          Не забудьте сохранить учетный данные для входа: login: ${formData.email}, password: ${formData.password}
-          `
-        })
-      } else {
+    if (manager) {
+      if (!isPasswordUpdate) delete formData.password;
+
+      APIHelper.updateManager(formData).then(res => {
+        if (res.is) {
+          setManager(undefined);
+          reset();
+          setAlertProps({
+            responseResultStatus: 'ok',
+            isResponseResult: true,
+            responseResultMsg: `Данные менеджера - ${formData.fio} успешно обновлены...`
+          })
+        } else {
+          setAlertProps({
+            responseResultStatus: 'error',
+            isResponseResult: true,
+            responseResultMsg: res.error as string
+          });
+        }
+      }).catch(err => {
         setAlertProps({
           responseResultStatus: 'error',
           isResponseResult: true,
-          responseResultMsg: res.error as string
+          responseResultMsg: err.message as string
         });
-      }
-    }).catch(err => {
-      setAlertProps({
-        responseResultStatus: 'error',
-        isResponseResult: true,
-        responseResultMsg: err.message as string
-      });
-    })
+      })
+    } else {
+      APIHelper.createManager(formData).then(res => {
+        if (res.is) {
+          reset();
+          setAlertProps({
+            responseResultStatus: 'ok',
+            isResponseResult: true,
+            responseResultMsg: `Менеджер ${formData.fio} успешно создан...
+            Не забудьте сохранить учетный данные для входа: login: ${formData.email}, password: ${formData.password}
+            `
+          })
+        } else {
+          setAlertProps({
+            responseResultStatus: 'error',
+            isResponseResult: true,
+            responseResultMsg: res.error as string
+          });
+        }
+      }).catch(err => {
+        setAlertProps({
+          responseResultStatus: 'error',
+          isResponseResult: true,
+          responseResultMsg: err.message as string
+        });
+      })
+    }
+
   }
 
   return (
@@ -151,7 +180,7 @@ const SetManager = () => {
                           {
                             ...register('fullName', {
                               required: 'Поле обязательно к заполнению!',
-                              value: manager.fio,
+                              value: manager?.fio,
                               pattern: {
                                 value: FormHelper.REGEXP.FIO,
                                 message: 'Поле должно содержать ФИО - Иван Иванович Иванов (на кириллице)'
@@ -178,7 +207,7 @@ const SetManager = () => {
                         {
                           ...register('phoneNumber', {
                             required: 'Поле обязательно к заполнению!',
-                            value: manager.phone,
+                            value: manager?.phone,
                             pattern: {
                               value: FormHelper.REGEXP.phone,
                               message: 'Поле должно содержать телефонный номер - 10 цифр (без 8/+7)'
@@ -231,7 +260,7 @@ const SetManager = () => {
                         {
                           ...register('emailAddress', {
                             required: 'Поле обязательно к заполнению!',
-                            value: manager.email,
+                            value: manager?.email,
                             pattern: {
                               value: FormHelper.REGEXP.email,
                               message: 'Введите корректный email'
@@ -290,12 +319,27 @@ const SetManager = () => {
                         placeholder="Добавить комментарий о менеджере"
                         {...register("bio", {
                           required: false,
-                          value: manager.bio
+                          value: manager?.bio
                         })}
                         ></textarea>
                     </div>
                   </div>
+                  {manager ? 
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+
+                    <div className="w-full sm:w-1/2">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="phoneNumber"
+                      >
+                        Нужно ли обновить пароль
+                      </label>
+                      <SwitcherTwo name='r_is' cb={setEnablePassword} />
+                    </div>
+                  </div>
                   
+                  : null}
+
                   <div className="flex justify-end gap-4.5">
 
                     <button

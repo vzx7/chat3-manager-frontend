@@ -20,7 +20,7 @@ const SwitcherTwo = ({ name, cb }: Props) => {
             className="sr-only"
             onChange={() => {
               setEnabled(!enabled);
-              cb && cb(enabled)
+              cb && cb(!enabled)
             }}
           />
           <div className="h-5 w-14 rounded-full bg-meta-9 shadow-inner dark:bg-[#5A616B]"></div>

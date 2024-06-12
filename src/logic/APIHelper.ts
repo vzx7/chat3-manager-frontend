@@ -175,17 +175,24 @@ export class APIHelper {
      * Метод добавления менеджера
      * @param manager 
      */
-    public static async CreateManager(manager: Manager): Promise<ResponseData> {
+    public static async createManager(manager: Manager): Promise<ResponseData> {
         return request('users/createUser', 'post', manager);
+    }
+
+    /**
+     * Метод обновления менеджера
+     * @param manager 
+     */
+    public static async updateManager(manager: Manager): Promise<ResponseData> {
+        return request('users/' + manager.id, 'put', manager);
     }
 
     /**
      * Получить списко менеджеров
      * @returns 
      */
-    public static async getManagers(): Promise<Manager[]> {
-        const { data } = await axios.get(API_URL);
-        return data;
+    public static async getManagers(): Promise<ResponseData> {
+        return request('users', 'get');
     }
 
     /**
@@ -194,16 +201,7 @@ export class APIHelper {
      * @returns 
      */
     public static async setAcivateManager(params: Activate) {
-        const { data } = await axios.patch(
-            API_URL,
-            params,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-        console.log(data)
-        return true;
+        return request('users/setActive', 'put', params);
     }
 
     /**
@@ -212,7 +210,6 @@ export class APIHelper {
      * @returns 
      */
     public static async removeManager(managerId: number) {
-        const { data } = await axios.delete(API_URL + managerId);
-        return data;
+        return request('users/' + managerId, 'delete');
     }
 }

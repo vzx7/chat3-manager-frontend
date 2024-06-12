@@ -1,5 +1,4 @@
 import TableService from '../../components/TableService.tsx';
-import { User } from '../../types/User.ts';
 
 const Main = () => {
   return (
