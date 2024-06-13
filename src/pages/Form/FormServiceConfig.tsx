@@ -141,7 +141,7 @@ const FormServiceConfig = () => {
       },
       consultant: {
         name: data.c_name,
-        male: Number(data.c_male),
+        male: Number(data.c_male) === 1 ? true : false,
         photo: file,
         description: data.c_description
       }

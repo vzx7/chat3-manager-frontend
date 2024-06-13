@@ -21,7 +21,7 @@ export type Service = {
     }
     consultant?: {
         name: string,
-        male: number,
+        male: boolean,
         photo: File,
         description: string
     }
