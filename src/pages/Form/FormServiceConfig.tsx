@@ -20,7 +20,7 @@ import Alerts from '../../UiElements/Alerts';
 const FormServiceConfig = () => {
   const [personalPoliceValue, setPersonalPoiiceValue] = useState('');
   const [hiddenPersonalPoiiceError, setHiddenPersonalPoiiceError] = useState('hidden');
-  const [isRedirect, setRedirect] = useState(true);
+  const [isRedirect, setRedirect] = useState(false);
   const [service, setService] = useState<Service>();
   const params = useParams();
   const [alertProps, setAlertProps] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
@@ -128,7 +128,8 @@ const FormServiceConfig = () => {
       domain: service?.domain || '',
       title: data.title,
       brand: Number(data.brand),
-      model: Number(data.model),
+      //TODO временно отключено
+      //model: Number(data.model),
       description: data.description,
       personalPolice: personalPoliceValue,
       autoCenter: {
@@ -146,7 +147,7 @@ const FormServiceConfig = () => {
       }
     }
 
-    if (data.url) {
+    if (isRedirect && data.url) {
       formData.url = data.url
     }
 
@@ -274,7 +275,7 @@ const FormServiceConfig = () => {
                   </div>
                   <TextFieldError errors={errors} error={errors['brand']?.message} />
                 </div>
-                <div className="mb-4.5">
+                {/* <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
                     Модели <span className="text-meta-1">*</span>
                   </label>
@@ -311,7 +312,7 @@ const FormServiceConfig = () => {
                     </span>
                   </div>
                   <TextFieldError errors={errors} error={errors['model']?.message} />
-                </div>
+                </div> */}
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
                     Название сервиса<span className="text-meta-1">*</span>
@@ -394,7 +395,7 @@ const FormServiceConfig = () => {
                         }
                       })
                       }
-                      disabled={isRedirect}
+                      disabled={!isRedirect}
                       type="text"
                       placeholder="Введите URL для перенаправления"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
