@@ -200,7 +200,7 @@ export class APIHelper {
      * @param params 
      * @returns 
      */
-    public static async setAcivateManager(params: Activate) {
+    public static async setActivateManager(params: Activate) {
         return request('users/setActive', 'put', params);
     }
 

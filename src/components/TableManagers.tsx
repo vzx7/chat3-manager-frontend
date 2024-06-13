@@ -20,7 +20,7 @@ const TableManagers = () => {
     const { active, id } = ev.currentTarget.dataset;
     const is = active === 'true' ? false : true;
 
-    APIHelper.setAcivateManager({ id: Number(id), active: is }).then((res: ResponseData) => {
+    APIHelper.setActivateManager({ id: Number(id), active: is }).then((res: ResponseData) => {
       if (res.is) {
         setAlertProps({
           responseResultStatus: 'ok',
