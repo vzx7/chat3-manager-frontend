@@ -11,8 +11,7 @@ const PasswordGenerator = ({ cl }: { cl: Function }) => {
   const [password, setPassword] = useState(generate(opts));
 
   const generateNewPassword = () => {
-    const password = generate(opts);
-    setPassword(password);
+    setPassword(generate(opts));
   };
 
   useEffect(() => {

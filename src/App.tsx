@@ -8,7 +8,7 @@ import Main from './pages/Dashboard/Main';
 import Page404 from './pages/404';
 import { User } from './types/User';
 import useLocalStorage from './hooks/useLocalStorage';
-import { AuthContext } from './logic/context';
+import { AuthContext } from './logic/Context';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 

@@ -1,17 +1,17 @@
 import Breadcrumb from '../../components/Breadcrumb';
-import SwitcherTwo from '../../components/SwitcherTwo';
+import Switcher from '../../components/Switcher';
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import ReactQuill from 'react-quill';
 import { FormHelper } from '../../logic/FormHelper';
-import TextFieldError from '../../components/TextFieldError';
+import TextFieldError from '../../common/TextFieldError/TextFieldError';
 import { Service } from '../../types/Service';
 import { APIHelper } from '../../logic/APIHelper';
 import 'react-quill/dist/quill.snow.css';
 import './FormServiceConfig.css'
 import { useParams } from 'react-router-dom';
 import { ResponseStatus } from '../../types/ResponseStatus';
-import Alerts from '../UiElements/Alerts';
+import Alerts from '../../UiElements/Alerts';
 
 /**
  * Настройка сервиса
@@ -378,7 +378,7 @@ const FormServiceConfig = () => {
                     <label className="mb-2.5 block text-black dark:text-white">
                       Редирект
                     </label>
-                    <SwitcherTwo name='r_is' cb={setURL} />
+                    <Switcher name='r_is' cb={setURL} />
                   </div>
 
                   <div className="w-full xl:w-11/12">

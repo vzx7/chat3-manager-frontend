@@ -6,12 +6,12 @@ import { Manager } from '../../types/Manager';
 import { APIHelper } from '../../logic/APIHelper';
 import { useForm } from 'react-hook-form';
 import { FormHelper } from '../../logic/FormHelper';
-import TextFieldError from '../../components/TextFieldError';
+import TextFieldError from '../../common/TextFieldError/TextFieldError';
 import AdmAva from '../../images/avatars/adm.png';
 import MngAva from '../../images/avatars/mng.png';
-import Alerts from '../UiElements/Alerts';
 import { ResponseStatus } from '../../types/ResponseStatus';
 import { useState } from 'react';
+import Alerts from '../../UiElements/Alerts';
 
 type Props = {
   doAuth: (user: User) => void

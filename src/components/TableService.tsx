@@ -4,9 +4,9 @@ import { useContext, useEffect, useState } from "react";
 import { ResponseData } from "../types/ResponseData";
 import { Domain } from "../types/Domain";
 import { Role } from "../enums/Role";
-import { AuthContext } from "../logic/context";
-import Alerts from "../pages/UiElements/Alerts";
+import { AuthContext } from "../logic/Context";
 import { ResponseStatus } from "../types/ResponseStatus";
+import Alerts from "../UiElements/Alerts";
 
 const TableService = () => {
   const [alertProps, setAlertProps] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({

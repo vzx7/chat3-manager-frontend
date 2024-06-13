@@ -3,7 +3,7 @@ type Props = {
   name?: string,
   cb?: Function
 }
-const SwitcherTwo = ({ name, cb }: Props) => {
+const Switcher = ({ name, cb }: Props) => {
   const [enabled, setEnabled] = useState(false);
 
   return (
@@ -35,4 +35,4 @@ const SwitcherTwo = ({ name, cb }: Props) => {
   );
 };
 
-export default SwitcherTwo;
+export default Switcher;

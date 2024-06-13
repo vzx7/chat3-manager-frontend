@@ -4,14 +4,15 @@ import { useForm } from "react-hook-form";
 import { FormHelper } from '../logic/FormHelper';
 import { Manager } from '../types/Manager';
 import { APIHelper } from '../logic/APIHelper';
-import TextFieldError from '../components/TextFieldError';
+import TextFieldError from '../common/TextFieldError/TextFieldError';
 import { useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../logic/context';
+import { AuthContext } from '../logic/Context';
 import { ResponseStatus } from '../types/ResponseStatus';
-import Alerts from './UiElements/Alerts';
-import PasswordGenerator from '../components/PasswordGenerator';
-import SwitcherTwo from '../components/SwitcherTwo';
+
+import PasswordGenerator from '../common/PasswordGenerator/PasswordGenerator';
+import Switcher from '../components/Switcher';
+import Alerts from '../UiElements/Alerts';
 
 
 const SetManager = () => {
@@ -334,7 +335,7 @@ const SetManager = () => {
                       >
                         Нужно ли обновить пароль
                       </label>
-                      <SwitcherTwo name='r_is' cb={setEnablePassword} />
+                      <Switcher name='r_is' cb={setEnablePassword} />
                     </div>
                   </div>
                   

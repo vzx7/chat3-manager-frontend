@@ -3,10 +3,10 @@ import CheckboxTwo from '../../components/CheckboxTwo';
 import { useForm } from "react-hook-form";
 import { APIHelper } from '../../logic/APIHelper';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../../logic/context';
-import Alerts from '../UiElements/Alerts';
+import { AuthContext } from '../../logic/Context';
 import { ResponseStatus } from '../../types/ResponseStatus';
-import TextFieldError from '../../components/TextFieldError';
+import TextFieldError from '../../common/TextFieldError/TextFieldError';
+import Alerts from '../../UiElements/Alerts';
 
 const FormServiceInit = () => {
   const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({

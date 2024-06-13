@@ -3,9 +3,9 @@ import { APIHelper } from "../logic/APIHelper";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ResponseData } from '../types/ResponseData';
-import Alerts from '../pages/UiElements/Alerts';
 import { ResponseStatus } from '../types/ResponseStatus';
 import { Manager } from '../types/Manager';
+import Alerts from '../UiElements/Alerts';
 
 const TableManagers = () => {
   const navigate = useNavigate();
