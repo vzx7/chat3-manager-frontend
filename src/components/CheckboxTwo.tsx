@@ -2,10 +2,12 @@ import { useState } from 'react';
 type Props = {
   text?: string,
   name: string,
-  idRequired: boolean
+  is?: boolean,
+  idRequired: boolean,
+  doCheck: Function
 }
-const CheckboxTwo = ({ text, idRequired, name }: Props) => {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+const CheckboxTwo = ({ text, idRequired, name, doCheck, is }: Props) => {
+  const [isChecked, setIsChecked] = useState<boolean>(!!is);
 
   return (
     <div>
@@ -21,6 +23,7 @@ const CheckboxTwo = ({ text, idRequired, name }: Props) => {
             className="sr-only"
             name={name}
             onChange={() => {
+              doCheck(!isChecked);
               setIsChecked(!isChecked);
             }}
           />

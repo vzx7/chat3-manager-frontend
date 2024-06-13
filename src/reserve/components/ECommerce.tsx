@@ -1,13 +1,14 @@
-import CardFour from '../../components/CardFour.tsx';
-import CardOne from '../../components/CardOne.tsx';
-import CardThree from '../../components/CardThree.tsx';
-import CardTwo from '../../components/CardTwo.tsx';
-import ChartOne from '../../components/ChartOne.tsx';
-import ChartThree from '../../components/ChartThree.tsx';
-import ChartTwo from '../../components/ChartTwo.tsx';
-import ChatCard from '../../components/ChatCard.tsx';
-import MapOne from '../../components/MapOne.tsx';
-import TableOne from '../../components/TableOne.tsx';
+import CardFour from './CardFour.tsx';
+import CardOne from './CardOne.tsx';
+import CardThree from './CardThree.tsx';
+import CardTwo from './CardTwo.tsx';
+import ChartOne from './ChartOne.tsx';
+import ChartThree from './ChartThree.tsx';
+import ChartTwo from './ChartTwo.tsx';
+import ChatCard from './ChatCard.tsx';
+
+import TableOne from './TableOne.tsx';
+import MapOne from './MapOne.tsx';
 
 const ECommerce = () => {
   return (

@@ -1,8 +1,22 @@
 import Breadcrumb from '../../components/Breadcrumb';
 import CheckboxTwo from '../../components/CheckboxTwo';
 import { useForm } from "react-hook-form";
+import { APIHelper } from '../../logic/APIHelper';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../logic/Context';
+import { ResponseStatus } from '../../types/ResponseStatus';
+import TextFieldError from '../../common/TextFieldError/TextFieldError';
+import Alerts from '../../UiElements/Alerts';
 
 const FormServiceInit = () => {
+  const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
+    isResponseResult: false,
+    responseResultMsg: '',
+    responseResultStatus: ''
+  });
+  //@ts-ignore
+  const { currentUser, setCurrentUser } = useContext(AuthContext); 
+  const [isSSL, setSSL] = useState(false)
   const {
     register,
     formState: { errors },
@@ -13,29 +27,43 @@ const FormServiceInit = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-    const formData = new FormData();
-    formData.append("isSSL", data.isSSL);
-    formData.append("domain", data.domain);
 
-    reset();
-
-    const requestOptions = {
-      method: "POST",
-      // headers: { 'Content-Type': 'application/json' },
-      body: formData
+    const formData = {
+      isSSL,
+      domain: data.domain,
+      userId: currentUser.id
     };
+
+    APIHelper.createService(formData).then(res => {
+      if (res.is) {
+        reset();
+        setSSL(false);
+        const msgPart = res.data?.isConfigured 
+        ? 'Данный домен подключен к конфигурации, вы закончили свою работу с этим доменом. Спасибо!'
+        : 'Вы можете перейти к списку сервисов и создать конфигурацию для этого домена.';
+        setAlertProps({
+          responseResultStatus: 'ok',
+          isResponseResult: true,
+          responseResultMsg: `${data.domain}, успешно добавлен. ${msgPart}`
+        })
+      } else {
+        setAlertProps({
+          responseResultStatus: 'error',
+          isResponseResult: true,
+          responseResultMsg: res.error as string
+        });
+      }
+    }).catch(err => {
+      setAlertProps({
+        responseResultStatus: 'error',
+        isResponseResult: true,
+        responseResultMsg: err.message as string
+      });
+    });
     return;
 
   }
-  function TextFieldError({ error, errors }: { error?: any, errors: any }) {
-    console.log(errors)
-    return error ? (
-      <p className="text-danger mt-2 text-sm" >
-        {error}
-      </p>
-    ) : null;
-  }
+
   return (
     <>
       <Breadcrumb pageName="Создание сервиса" />
@@ -49,6 +77,7 @@ const FormServiceInit = () => {
                 Данные сервиса
               </h3>
             </div>
+            <Alerts active={alertProps.isResponseResult} msg={alertProps.responseResultMsg} type={alertProps.responseResultStatus} />
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="p-6.5">
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -76,7 +105,7 @@ const FormServiceInit = () => {
                   <label className="mb-2.5 block text-black dark:text-white">
                     Enable SSL <span className="text-meta-1">*</span>
                   </label>
-                  <CheckboxTwo text="Использовать SSL для этого домена" idRequired={true} name="isSSL" />
+                  <CheckboxTwo text="Использовать SSL для этого домена" is={isSSL} idRequired={true} name="isSSL" doCheck={setSSL} />
                 </div>
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">

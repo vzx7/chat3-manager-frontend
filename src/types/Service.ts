@@ -1,23 +1,27 @@
 export type Service = {
-    name: string,
-    title: string,
+    id?: number,
+    name?: string,
+    title?: string,
     domain: string,
-    type: string,
-    brand: string,
-    model: string,
-    description: string,
-    personalPolice: string,
+    /**
+     * Тип сервиса
+     */
+    type?: number,
+    brand?: number,
+    model?: number,
+    description?: string,
+    personalPolice?: string,
     url?: string,
-    autoCenter: {
+    autoCenter?: {
         name: string,
         phone: number,
         address: string,
         email: string,
         timezone: string
     }
-    consultant: {
+    consultant?: {
         name: string,
-        male: number,
+        male: boolean,
         photo: File,
         description: string
     }

@@ -1,30 +1,96 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../images/logo/logo-red-inversion.png';
 import { User } from '../../types/User';
-import { useEffect } from 'react';
 import { Role } from '../../enums/Role';
+import { Manager } from '../../types/Manager';
+import { APIHelper } from '../../logic/APIHelper';
+import { useForm } from 'react-hook-form';
+import { FormHelper } from '../../logic/FormHelper';
+import TextFieldError from '../../common/TextFieldError/TextFieldError';
+import AdmAva from '../../images/avatars/adm.png';
+import MngAva from '../../images/avatars/mng.png';
+import { ResponseStatus } from '../../types/ResponseStatus';
+import { useState } from 'react';
+import Alerts from '../../UiElements/Alerts';
 
 type Props = {
   doAuth: (user: User) => void
 };
 
 const SignIn = ({ doAuth } : Props) => {
+
+  const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
+    isResponseResult: false,
+    responseResultMsg: '',
+    responseResultStatus: ''
+  });
+
   const navigate = useNavigate();
-  useEffect(() => {
-    //FIXME временно для тестов
-    doAuth({
-      name: 'I',
-      avatar: '',
-      role: Role.admin
+
+  const {
+    register,
+    formState: { errors },
+    reset,
+    handleSubmit
+  } = useForm({
+    mode: 'onBlur'
+  });
+  
+  const onSubmit = async (data: any) => {
+
+    const formData: Manager = {
+      password: data.password,
+      email: data.email
+    };
+
+    reset();
+
+    APIHelper.login(formData).then((result: any) => {
+      if (result.is) {
+        const { user, tokens } = result.data;
+
+        doAuth({
+          id: user.id,
+          avatar: user.role === Role.admin ? AdmAva : MngAva,
+          fio: user.fio,
+          role: user.role,
+          token: tokens.token.key
+        });
+
+        setAlertProps({
+          responseResultStatus: 'ok',
+          isResponseResult: true,
+          responseResultMsg: `${user.fio}, вы авторизованы, через 5 секунд вы будете перенаправлены на главную страницу!`
+        })
+
+        const tId = setTimeout(() => {
+          navigate('/');
+
+          clearTimeout(tId);
+        }, 5000);
+      
+      } else {
+        setAlertProps({
+          responseResultStatus: 'error',
+          isResponseResult: true,
+          responseResultMsg: result.error
+        });
+      }
+    }).catch(err => {
+      setAlertProps({
+        responseResultStatus: 'error',
+        isResponseResult: true,
+        responseResultMsg: err.message as string
+      });
     })
-    navigate('/');
-  },[])
+  }
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
+           
               <Link className="mb-5.5 inline-block" to="/">
                 <img className="hidden dark:block" src={Logo} alt="Logo" />
                 <img className="dark:hidden" src={Logo} alt="Logo" />
@@ -165,8 +231,8 @@ const SignIn = ({ doAuth } : Props) => {
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Авторизация
               </h2>
-
-              <form>
+              <Alerts active={alertProps.isResponseResult} msg={alertProps.responseResultMsg} type={alertProps.responseResultStatus} />
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
@@ -174,6 +240,15 @@ const SignIn = ({ doAuth } : Props) => {
                   <div className="relative">
                     <input
                       type="email"
+                      {
+                        ...register('email', {
+                          required: 'Поле обязательно к заполнению!',
+                          pattern: {
+                            value: FormHelper.REGEXP.email,
+                            message: 'Введите корректный email'
+                          }
+                        })
+                      }
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
@@ -196,6 +271,7 @@ const SignIn = ({ doAuth } : Props) => {
                       </svg>
                     </span>
                   </div>
+                  <TextFieldError errors={errors} error={errors['email']?.message} />
                 </div>
 
                 <div className="mb-6">
@@ -205,7 +281,7 @@ const SignIn = ({ doAuth } : Props) => {
                   <div className="relative">
                     <input
                       type="password"
-                      placeholder=""
+                      { ...register('password') }
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
 
