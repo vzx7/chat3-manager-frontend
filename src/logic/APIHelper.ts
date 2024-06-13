@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import axios, { AxiosError, Method } from "axios";
 import { Manager } from "../types/Manager";
 import { Service } from "../types/Service";
@@ -35,7 +36,7 @@ const getUser = () => {
 /**
  * Роут API
  */
-const API_URL = 'http://localhost:3000/';
+const API_URL = import.meta.env.PROD ? location.href : 'http://localhost:3000/';
 
 /**
  * Хелпер для запросов к Api
