@@ -29,6 +29,18 @@ const FormServiceConfig = () => {
     responseResultStatus: ''
   });
 
+  const TZexclude = [
+    new RegExp('Africa'),
+    new RegExp('America'),
+    new RegExp('Antarctica'),
+    new RegExp('Atlantic'),
+    new RegExp('Australia'),
+    new RegExp('Arctic'),
+    new RegExp('Pacific'),
+    new RegExp('Indian')
+  ]
+  const timeZoneArr = Intl.supportedValuesOf('timeZone').filter(v => TZexclude.every(x => !x.test(v)));
+
   useEffect(() => {
     APIHelper.getService(Number(params.id)).then(res => {
       if (res.is) {
@@ -495,8 +507,7 @@ const FormServiceConfig = () => {
                       }
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                       <option value="">Выбирете таймзону</option>
-                      <option value="1">Europa/Moscow</option>
-                      <option value="2">Europa/Berlin</option>
+                      {timeZoneArr.map((tz) => (<option value={tz}>{tz}</option>))}
                     </select>
                     <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                       <svg

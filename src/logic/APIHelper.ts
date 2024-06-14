@@ -39,6 +39,13 @@ const getUser = () => {
 const API_URL = import.meta.env.PROD ? location.href : 'http://localhost:3000/';
 
 /**
+ * Удалить пользователя
+ */
+const dropUser = () => {
+    localStorage.setItem('user', '');
+    location.replace(location.origin + '/auth/signin');
+}
+/**
  * Хелпер для запросов к Api
  * @param url 
  * @param method 
@@ -72,8 +79,7 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
         if ((error as AxiosError)?.response?.status === 401) {
             if (isRepeatedRequest) {
                 // в случае исключения обновления рефреш токена жесткий редирект на страницу авторизации
-                localStorage.setItem('user', '');
-                location.replace(location.origin + '/auth/signin');
+                dropUser();
                 return;
             }
 
@@ -83,6 +89,8 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
             localStorage.setItem('user', JSON.stringify({ ...user, token }));
             return request(url, method, data, headersExt, true);
         }
+        // Если обновление refreshToken упало
+        if (url === 'refreshToken') dropUser();
 
         const errorResponse  = (error as AxiosError)?.response?.data;
         if (errorResponse) return errorResponse;
