@@ -36,7 +36,7 @@ const getUser = () => {
 /**
  * Роут API
  */
-const API_URL = import.meta.env.PROD ? location.href : 'http://localhost:3000/';
+const API_URL = import.meta.env.PROD ? location.origin : 'http://localhost:3000';
 
 /**
  * Удалить пользователя
@@ -66,7 +66,7 @@ const request = async (url: string, method: Method, data?: any, headersExt?: Hea
         }
 
         const response = await axios({
-            url: API_URL + url,
+            url: `${API_URL}/${url}`,
             method,
             data,
             headers,
