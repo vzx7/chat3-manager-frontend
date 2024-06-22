@@ -4,5 +4,5 @@ export type Domain = {
     active?: boolean;
     isConfigured?: boolean;
     userId?: number;
-    isInitialized?: boolean;
+    isInitialization?: boolean,
 }
