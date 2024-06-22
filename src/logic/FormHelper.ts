@@ -12,7 +12,8 @@ export class FormHelper {
         email: new RegExp(".+@.+\..+", 'i'),
         url: new RegExp('(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?\/[a-zA-Z0-9]{2,}'),
         phone: new RegExp('^[0-9]{10}$'),
-        password: new RegExp('^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$')
+        password: new RegExp('^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$'),
+        domain: new RegExp('^[a-z0-9]{2,}(-[a-z0-9]+)*$', 'i')
     }
  
     public static validateImg(file: File): ErrorValidateType {
