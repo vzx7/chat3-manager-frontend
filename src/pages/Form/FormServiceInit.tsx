@@ -7,6 +7,7 @@ import { AuthContext } from '../../logic/Context';
 import { ResponseStatus } from '../../types/ResponseStatus';
 import TextFieldError from '../../common/TextFieldError/TextFieldError';
 import Alerts from '../../UiElements/Alerts';
+import { FormHelper } from '../../logic/FormHelper';
 
 const FormServiceInit = () => {
   const [alertProps, setAlertProps ] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
@@ -89,6 +90,10 @@ const FormServiceInit = () => {
                       {
                       ...register('domain', {
                         required: 'Поле обязательно к заполнению!',
+                        pattern: {
+                          value: FormHelper.REGEXP.domain,
+                          message: 'Введите корректный domain. Он может содержать только буквы латинского алфавита, цифры, дефис (не может содержать два дефиса подряд и начинаться на дефис)'
+                        }
                       })
                       }
                       type="text"
