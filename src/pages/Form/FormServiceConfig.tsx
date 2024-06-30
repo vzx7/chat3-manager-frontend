@@ -135,7 +135,7 @@ const FormServiceConfig = () => {
       id: service?.id,
       name: data.name,
       type: Number(data.type),
-      domain: service?.domain || '',
+      subdomain: service?.subdomain || '',
       title: data.title,
       brand: Number(data.brand),
       //TODO временно отключено
@@ -166,7 +166,7 @@ const FormServiceConfig = () => {
         setAlertProps({
           responseResultStatus: 'ok',
           isResponseResult: true,
-          responseResultMsg: `${service?.domain}, успешно отконфигурирован.`
+          responseResultMsg: `${service?.subdomain}, успешно отконфигурирован.`
         });
         reset();
         setPersonalPoiiceValue('');
@@ -206,7 +206,7 @@ const FormServiceConfig = () => {
               <div className="p-6.5">
                 <div className="border-b border-stroke py-4 dark:border-strokedark">
                   <h3 className="text-black dark:text-white font-bold text-lg">
-                    Данные сервиса для поддомена "{service?.domain}"
+                    Данные сервиса для поддомена "{service?.subdomain}"
                   </h3>
                 </div>
                 <div className="mb-4.5">
