@@ -1,14 +1,14 @@
 .ql-snow .ql-stroke, .ql-snow .ql-stroke-miter {
-    stroke: #f1e6e6;
+    stroke: #dedfc3;
 }
 
 .ql-snow .ql-fill,
 .ql-snow .ql-stroke.ql-fill {
-    fill: #f1e6e6;
+    fill: #dedfc3;
 }
 
 .ql-snow .ql-picker {
-    color: #f1e6e6;
+    color: #dedfc3;
 }
 .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
     background: #2e3a47;
