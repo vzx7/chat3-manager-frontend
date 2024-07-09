@@ -100,7 +100,12 @@ const TableService = () => {
                 <tr key={service.id}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">
-                      <a target="_blank" href={`https://${service.subdomain}.${service.domain}`}>{service.subdomain}</a>
+                      { service.isConfigured && service.active && service.isInitialization ?
+                      <a className="text-primary text-blue-600 dark:text-blue-500 hover:underline" target="_blank" href={`https://${service.subdomain}.${service.domain}`}>{service.subdomain}.{service.domain}</a>
+                      : 
+                      <p>{service.subdomain}.{service.domain}</p>
+                      }
+                     
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
