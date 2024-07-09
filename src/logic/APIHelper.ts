@@ -43,7 +43,7 @@ const API_URL = import.meta.env.PROD ? location.origin : 'http://localhost:3000'
  */
 const dropUser = () => {
     localStorage.setItem('user', '');
-    location.replace(location.origin + '/auth/signin');
+    location.replace(location.origin + '/');
 }
 /**
  * Хелпер для запросов к Api
