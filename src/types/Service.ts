@@ -2,7 +2,8 @@ export type Service = {
     id?: number,
     name?: string,
     title?: string,
-    subdomain: string,
+    subdomain?: string,
+    domain?: string,
     /**
      * Тип сервиса
      */

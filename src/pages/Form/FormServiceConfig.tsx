@@ -23,6 +23,7 @@ const FormServiceConfig = () => {
   const [isRedirect, setRedirect] = useState(false);
   const [service, setService] = useState<Service>();
   const params = useParams();
+  const navigate = useNavigate();
   const [alertProps, setAlertProps] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
     isResponseResult: false,
     responseResultMsg: '',
@@ -136,6 +137,7 @@ const FormServiceConfig = () => {
       name: data.name,
       type: Number(data.type),
       subdomain: service?.subdomain || '',
+      domain: service?.domain || '',
       title: data.title,
       brand: Number(data.brand),
       //TODO временно отключено
@@ -172,7 +174,6 @@ const FormServiceConfig = () => {
         setPersonalPoiiceValue('');
         setRedirect(false);
 
-        const navigate = useNavigate();
         const tId = setTimeout(() => {
           navigate('/service-list');
           clearTimeout(tId);
@@ -206,7 +207,7 @@ const FormServiceConfig = () => {
               <div className="p-6.5">
                 <div className="border-b border-stroke py-4 dark:border-strokedark">
                   <h3 className="text-black dark:text-white font-bold text-lg">
-                    Данные сервиса для поддомена "{service?.subdomain}"
+                    Данные сервиса для домена "{service?.subdomain}.{service?.domain}"
                   </h3>
                 </div>
                 <div className="mb-4.5">
@@ -591,7 +592,7 @@ const FormServiceConfig = () => {
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Должность и характеристики
+                    Должность и характеристики<span className="text-meta-1">*</span>
                   </label>
                   <textarea
 
