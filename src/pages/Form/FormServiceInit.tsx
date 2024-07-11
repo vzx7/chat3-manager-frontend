@@ -1,5 +1,4 @@
 import Breadcrumb from '../../components/Breadcrumb';
-import CheckboxTwo from '../../components/CheckboxTwo';
 import { useForm } from "react-hook-form";
 import { APIHelper } from '../../logic/APIHelper';
 import { useContext, useState } from 'react';
@@ -7,6 +6,7 @@ import { AuthContext } from '../../logic/Context';
 import { ResponseStatus } from '../../types/ResponseStatus';
 import TextFieldError from '../../common/TextFieldError/TextFieldError';
 import Alerts from '../../UiElements/Alerts';
+import Switcher from '../../components/Switcher';
 import { FormHelper } from '../../logic/FormHelper';
 
 const FormServiceInit = () => {
@@ -17,7 +17,7 @@ const FormServiceInit = () => {
   });
   //@ts-ignore
   const { currentUser, setCurrentUser } = useContext(AuthContext); 
-  const [isSSL, setSSL] = useState(false)
+  const defaultDomain = 'chat.genclient.ru';
   const {
     register,
     formState: { errors },
@@ -27,18 +27,24 @@ const FormServiceInit = () => {
     mode: 'onBlur'
   });
 
+
+  const [isEditDomain, editDomain] = useState(false);
+  const setEditDomain = (is: boolean) => {
+    editDomain(is);
+  }
+
   const onSubmit = async (data: any) => {
 
     const formData = {
-      isSSL,
       domain: data.domain,
+      subdomain: data.subdomain,
       userId: currentUser.id
     };
 
     APIHelper.createService(formData).then(res => {
       if (res.is) {
         reset();
-        setSSL(false);
+        editDomain(false);
         const msgPart = res.data?.isConfigured 
         ? 'Данный домен подключен к конфигурации, вы закончили свою работу с этим доменом. Спасибо!'
         : 'Вы можете перейти к списку сервисов и создать конфигурацию для этого домена.';
@@ -84,11 +90,11 @@ const FormServiceInit = () => {
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full ">
                     <label className="mb-2.5 block text-black dark:text-white">
-                      Domain <span className="text-meta-1">*</span>
+                      Поддомен <span className="text-meta-1">*</span>
                     </label>
                     <input
                       {
-                      ...register('domain', {
+                      ...register('subdomain', {
                         required: 'Поле обязательно к заполнению!',
                         pattern: {
                           value: FormHelper.REGEXP.domain,
@@ -97,24 +103,37 @@ const FormServiceInit = () => {
                       })
                       }
                       type="text"
-                      placeholder="Enter service domain"
+                      placeholder="Введите название для поддомена"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
-                    <TextFieldError errors={errors} error={errors['domain']?.message} />
+                    <TextFieldError errors={errors} error={errors['subdomain']?.message} />
                   </div>
-
-
                 </div>
 
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Enable SSL <span className="text-meta-1">*</span>
+                    Домен <span className="text-meta-1">*</span>
                   </label>
-                  <CheckboxTwo text="Использовать SSL для этого домена" is={isSSL} idRequired={true} name="isSSL" doCheck={setSSL} />
+                  <Switcher name='r_is' cb={setEditDomain} />
                 </div>
-
+                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                  <div className="w-full ">
+                    <input
+                      {
+                      ...register('domain', {
+                        required: 'Поле обязательно к заполнению! Вы можете использовать домен по умолчанию: ' + defaultDomain,
+                        value: defaultDomain
+                      })
+                      }
+                      disabled={!isEditDomain}
+                      type="text"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    />
+                    <TextFieldError errors={errors} error={errors['domain']?.message} />
+                  </div>
+                </div>
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                  Разместить домен
+                  Разместить поддомен
                 </button>
               </div>
             </form>

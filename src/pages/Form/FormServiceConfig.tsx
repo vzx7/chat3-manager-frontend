@@ -9,7 +9,7 @@ import { Service } from '../../types/Service';
 import { APIHelper } from '../../logic/APIHelper';
 import 'react-quill/dist/quill.snow.css';
 import './FormServiceConfig.css'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ResponseStatus } from '../../types/ResponseStatus';
 import Alerts from '../../UiElements/Alerts';
 
@@ -23,6 +23,7 @@ const FormServiceConfig = () => {
   const [isRedirect, setRedirect] = useState(false);
   const [service, setService] = useState<Service>();
   const params = useParams();
+  const navigate = useNavigate();
   const [alertProps, setAlertProps] = useState<{ isResponseResult: boolean, responseResultMsg: string, responseResultStatus: ResponseStatus }>({
     isResponseResult: false,
     responseResultMsg: '',
@@ -102,8 +103,6 @@ const FormServiceConfig = () => {
   const setURL = (is: boolean) => setRedirect(is);
 
   const onSubmit = async (data: any) => {
-    console.log(data, isRedirect, service);
-
     const file = data.c_photo[0];
     if (file) {
       const error = FormHelper.validateImg(file);
@@ -137,6 +136,7 @@ const FormServiceConfig = () => {
       id: service?.id,
       name: data.name,
       type: Number(data.type),
+      subdomain: service?.subdomain || '',
       domain: service?.domain || '',
       title: data.title,
       brand: Number(data.brand),
@@ -168,11 +168,16 @@ const FormServiceConfig = () => {
         setAlertProps({
           responseResultStatus: 'ok',
           isResponseResult: true,
-          responseResultMsg: `${service?.domain}, успешно отконфигурирован.`
+          responseResultMsg: `${service?.subdomain}, успешно отконфигурирован.`
         });
         reset();
         setPersonalPoiiceValue('');
         setRedirect(false);
+
+        const tId = setTimeout(() => {
+          navigate('/service-list');
+          clearTimeout(tId);
+        }, 3000);
       } else {
         setAlertProps({
           responseResultStatus: 'error',
@@ -193,7 +198,7 @@ const FormServiceConfig = () => {
     <>
       <Breadcrumb pageName="Конфигурация сервиса" />
 
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
           {/* <!-- Contact Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -202,7 +207,7 @@ const FormServiceConfig = () => {
               <div className="p-6.5">
                 <div className="border-b border-stroke py-4 dark:border-strokedark">
                   <h3 className="text-black dark:text-white font-bold text-lg">
-                    Данные сервиса для domain "{service?.domain}"
+                    Данные сервиса для домена "{service?.subdomain}.{service?.domain}"
                   </h3>
                 </div>
                 <div className="mb-4.5">
@@ -587,20 +592,20 @@ const FormServiceConfig = () => {
                 </div>
                 <div className="mb-6">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    BIO
+                    Должность и характеристики<span className="text-meta-1">*</span>
                   </label>
                   <textarea
 
                     {
                     ...register('c_description', {
-                      required: 'Введите должность/описание',
+                      required: 'Введите должность и характеристики',
                     })
                     }
                     rows={6}
-                    placeholder="Введите BIO"
+                    placeholder="Введите должность и характеристики"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   ></textarea>
-                  <TextFieldError errors={errors} error={errors['c_desc']?.message} />
+                  <TextFieldError errors={errors} error={errors['c_description']?.message} />
                 </div>
 
                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
